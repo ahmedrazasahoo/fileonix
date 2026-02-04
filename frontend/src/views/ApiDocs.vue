@@ -4,7 +4,7 @@
       <!-- Header Section -->
       <header class="api-header">
         <h1 class="api-title">
-          <span class="icon">📚</span>
+          <span class="icon"><BookOpen :size="56" :stroke-width="1.5" /></span>
           FileOnix API Documentation
         </h1>
         <p class="api-subtitle">Complete API reference for image conversion services</p>
@@ -13,22 +13,22 @@
       <!-- Quick Links -->
       <div class="quick-links">
         <a href="#endpoints" class="link-card">
-          <div class="link-icon">🔗</div>
+          <div class="link-icon"><Link :size="40" :stroke-width="1.5" /></div>
           <h3>Endpoints</h3>
           <p>API endpoints reference</p>
         </a>
         <a href="#authentication" class="link-card">
-          <div class="link-icon">🔐</div>
+          <div class="link-icon"><Lock :size="40" :stroke-width="1.5" /></div>
           <h3>Authentication</h3>
           <p>How to authenticate</p>
         </a>
         <a href="#examples" class="link-card">
-          <div class="link-icon">💻</div>
+          <div class="link-icon"><Code :size="40" :stroke-width="1.5" /></div>
           <h3>Code Examples</h3>
           <p>Integration examples</p>
         </a>
         <a href="#errors" class="link-card">
-          <div class="link-icon">⚠️</div>
+          <div class="link-icon"><AlertTriangle :size="40" :stroke-width="1.5" /></div>
           <h3>Error Codes</h3>
           <p>Error handling guide</p>
         </a>
@@ -44,7 +44,7 @@
 
       <!-- Authentication Section -->
       <section class="api-section">
-        <h2 id="authentication" class="section-title">🔐 Authentication</h2>
+        <h2 id="authentication" class="section-title"><Lock :size="28" :stroke-width="2" class="section-icon" /> Authentication</h2>
         <p class="section-description">All API requests require an API key to be included in the header.</p>
         
         <div class="code-block">
@@ -58,7 +58,7 @@
 
       <!-- Endpoints Section -->
       <section class="api-section">
-        <h2 id="endpoints" class="section-title">🔗 API Endpoints</h2>
+        <h2 id="endpoints" class="section-title"><Link :size="28" :stroke-width="2" class="section-icon" /> API Endpoints</h2>
 
         <!-- Convert Image Endpoint -->
         <div class="endpoint-card">
@@ -256,7 +256,7 @@
 
       <!-- Error Codes Section -->
       <section class="api-section">
-        <h2 id="errors" class="section-title">⚠️ Error Codes</h2>
+        <h2 id="errors" class="section-title"><AlertTriangle :size="28" :stroke-width="2" class="section-icon" /> Error Codes</h2>
         
         <div class="error-table">
           <div class="error-row header">
@@ -316,7 +316,7 @@
 
       <!-- Code Examples Section -->
       <section class="api-section">
-        <h2 id="examples" class="section-title">💻 Code Examples</h2>
+        <h2 id="examples" class="section-title"><Code :size="28" :stroke-width="2" class="section-icon" /> Code Examples</h2>
 
         <!-- JavaScript Example -->
         <div class="example-card">
@@ -495,20 +495,20 @@ if (response.data.success) {
 
       <!-- Support Section -->
       <section class="api-section">
-        <h2 class="section-title">💬 Support</h2>
+        <h2 class="section-title"><MessageCircle :size="28" :stroke-width="2" class="section-icon" /> Support</h2>
         <div class="support-grid">
           <a href="/contact" class="support-card">
-            <div class="support-icon">📧</div>
+            <div class="support-icon"><Mail :size="40" :stroke-width="1.5" /></div>
             <h3>Email Support</h3>
             <p>Get help via email</p>
           </a>
           <a href="/blog" class="support-card">
-            <div class="support-icon">📖</div>
+            <div class="support-icon"><FileText :size="40" :stroke-width="1.5" /></div>
             <h3>Documentation</h3>
             <p>Read our guides</p>
           </a>
           <a href="https://github.com" class="support-card">
-            <div class="support-icon">💬</div>
+            <div class="support-icon"><MessageCircle :size="40" :stroke-width="1.5" /></div>
             <h3>Community</h3>
             <p>Join discussions</p>
           </a>
@@ -519,8 +519,20 @@ if (response.data.success) {
 </template>
 
 <script>
+import { BookOpen, Link, Lock, Code, AlertTriangle, Mail, FileText, MessageCircle } from 'lucide-vue-next'
+
 export default {
-  name: 'ApiDocs'
+  name: 'ApiDocs',
+  components: {
+    BookOpen,
+    Link,
+    Lock,
+    Code,
+    AlertTriangle,
+    Mail,
+    FileText,
+    MessageCircle
+  }
 }
 </script>
 
@@ -557,7 +569,8 @@ export default {
 }
 
 .icon {
-  font-size: 3.5rem;
+  display: inline-flex;
+  color: var(--color-primary);
 }
 
 .api-subtitle {
@@ -594,7 +607,8 @@ export default {
 }
 
 .link-icon {
-  font-size: 2.5rem;
+  display: inline-flex;
+  color: var(--color-primary);
   margin-bottom: 1rem;
 }
 
@@ -627,6 +641,13 @@ export default {
   border-bottom: 2px solid var(--color-primary);
   font-weight: 600;
   letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.section-icon {
+  flex-shrink: 0;
 }
 
 .section-description {
@@ -718,22 +739,22 @@ export default {
 }
 
 .http-method.get {
-  background: #10b981;
+  background: var(--color-success);
   color: white;
 }
 
 .http-method.post {
-  background: #3b82f6;
+  background: var(--color-info);
   color: white;
 }
 
 .http-method.put {
-  background: #f59e0b;
+  background: var(--color-warning);
   color: white;
 }
 
 .http-method.delete {
-  background: #ef4444;
+  background: var(--color-danger);
   color: white;
 }
 
@@ -947,7 +968,8 @@ export default {
 }
 
 .support-icon {
-  font-size: 2.5rem;
+  display: inline-flex;
+  color: var(--color-primary);
   margin-bottom: 1rem;
 }
 

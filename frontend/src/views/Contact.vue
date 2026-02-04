@@ -88,7 +88,7 @@
             </button>
 
             <div v-if="submitted" class="success-message">
-              ✓ Thank you! Your message has been sent successfully.
+              <Check :size="20" class="success-icon" /> Thank you! Your message has been sent successfully.
             </div>
           </form>
         </div>
@@ -96,13 +96,13 @@
         <!-- Contact Info -->
         <div class="info-section">
           <div class="info-card">
-            <div class="info-icon">📍</div>
+            <div class="info-icon"><MapPin :size="48" :stroke-width="1.5" /></div>
             <h3 class="info-title">Visit Us</h3>
             <p class="info-text">123 Main Street<br>San Francisco, CA 94102</p>
           </div>
 
           <div class="info-card">
-            <div class="info-icon">📧</div>
+            <div class="info-icon"><Mail :size="48" :stroke-width="1.5" /></div>
             <h3 class="info-title">Email Us</h3>
             <p class="info-text">
               <a href="mailto:info@myapp.com">info@myapp.com</a><br>
@@ -111,7 +111,7 @@
           </div>
 
           <div class="info-card">
-            <div class="info-icon">📞</div>
+            <div class="info-icon"><Phone :size="48" :stroke-width="1.5" /></div>
             <h3 class="info-title">Call Us</h3>
             <p class="info-text">
               <a href="tel:+15551234567">+1 (555) 123-4567</a><br>
@@ -120,7 +120,7 @@
           </div>
 
           <div class="info-card">
-            <div class="info-icon">🌐</div>
+            <div class="info-icon"><Globe :size="48" :stroke-width="1.5" /></div>
             <h3 class="info-title">Follow Us</h3>
             <div class="social-links">
               <a href="#" class="social-link">Twitter</a>
@@ -157,8 +157,17 @@
 </template>
 
 <script>
+import { MapPin, Mail, Phone, Globe, Check } from 'lucide-vue-next'
+
 export default {
   name: 'Contact',
+  components: {
+    MapPin,
+    Mail,
+    Phone,
+    Globe,
+    Check
+  },
   data() {
     return {
       form: {
@@ -374,13 +383,21 @@ export default {
 .success-message {
   margin-top: var(--spacing-md);
   padding: var(--spacing-md);
-  background: var(--gradient-success);
+  background: var(--color-success);
   color: white;
   border-radius: var(--radius-md);
   text-align: center;
   font-weight: 600;
   font-family: 'Poppins', sans-serif;
   animation: scaleIn 0.3s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+}
+
+.success-icon {
+  flex-shrink: 0;
 }
 
 .info-card {
@@ -400,9 +417,9 @@ export default {
 }
 
 .info-icon {
-  font-size: 3rem;
+  display: inline-flex;
+  color: var(--color-primary);
   margin-bottom: var(--spacing-md);
-  filter: drop-shadow(0 4px 12px rgba(99, 102, 241, 0.3));
 }
 
 .info-title {

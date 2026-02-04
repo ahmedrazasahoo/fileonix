@@ -3,7 +3,7 @@
     <div class="about-container">
       <!-- Hero Section -->
       <div class="about-hero">
-        <div class="hero-icon">📁</div>
+        <div class="hero-icon"><FolderOpen :size="80" :stroke-width="1.5" /></div>
         <h1 class="hero-title">About <span class="gradient-text">FileOnix</span></h1>
         <p class="hero-subtitle">Your privacy-first image conversion solution</p>
       </div>
@@ -24,32 +24,32 @@
         <h2 class="section-title">Why Choose FileOnix?</h2>
         <div class="features-grid">
           <div class="feature-box">
-            <div class="feature-icon">🔒</div>
+            <div class="feature-icon"><Lock :size="48" :stroke-width="1.5" /></div>
             <h3>100% Private</h3>
             <p>All conversions happen in your browser. Your files never leave your device, ensuring complete privacy and security.</p>
           </div>
           <div class="feature-box">
-            <div class="feature-icon">⚡</div>
+            <div class="feature-icon"><Zap :size="48" :stroke-width="1.5" /></div>
             <h3>Lightning Fast</h3>
             <p>No upload or download time. Instant conversions powered by modern browser technology.</p>
           </div>
           <div class="feature-box">
-            <div class="feature-icon">🎨</div>
+            <div class="feature-icon"><Palette :size="48" :stroke-width="1.5" /></div>
             <h3>Multiple Formats</h3>
             <p>Convert between PNG, JPG, WebP, GIF, and more with adjustable quality settings.</p>
           </div>
           <div class="feature-box">
-            <div class="feature-icon">📦</div>
+            <div class="feature-icon"><Package :size="48" :stroke-width="1.5" /></div>
             <h3>Batch Processing</h3>
             <p>Convert multiple images at once with our powerful batch processing capabilities.</p>
           </div>
           <div class="feature-box">
-            <div class="feature-icon">📏</div>
+            <div class="feature-icon"><Ruler :size="48" :stroke-width="1.5" /></div>
             <h3>Resize & Optimize</h3>
             <p>Resize images and optimize file sizes while maintaining quality.</p>
           </div>
           <div class="feature-box">
-            <div class="feature-icon">💰</div>
+            <div class="feature-icon"><DollarSign :size="48" :stroke-width="1.5" /></div>
             <h3>Free Forever</h3>
             <p>No subscriptions, no limits, no watermarks. Completely free to use.</p>
           </div>
@@ -110,12 +110,12 @@
           We are committed to:
         </p>
         <ul class="commitment-list">
-          <li>✅ Keeping the service <strong>100% free</strong> forever</li>
-          <li>✅ Never uploading or storing your files</li>
-          <li>✅ Maintaining <strong>complete transparency</strong> in how we operate</li>
-          <li>✅ Continuously <strong>improving</strong> the service based on user feedback</li>
-          <li>✅ Respecting your <strong>privacy</strong> and data rights</li>
-          <li>✅ Providing <strong>excellent support</strong> to our users</li>
+          <li class="commitment-item"><Check :size="20" :stroke-width="2" class="commitment-check" /> Keeping the service <strong>100% free</strong> forever</li>
+          <li class="commitment-item"><Check :size="20" :stroke-width="2" class="commitment-check" /> Never uploading or storing your files</li>
+          <li class="commitment-item"><Check :size="20" :stroke-width="2" class="commitment-check" /> Maintaining <strong>complete transparency</strong> in how we operate</li>
+          <li class="commitment-item"><Check :size="20" :stroke-width="2" class="commitment-check" /> Continuously <strong>improving</strong> the service based on user feedback</li>
+          <li class="commitment-item"><Check :size="20" :stroke-width="2" class="commitment-check" /> Respecting your <strong>privacy</strong> and data rights</li>
+          <li class="commitment-item"><Check :size="20" :stroke-width="2" class="commitment-check" /> Providing <strong>excellent support</strong> to our users</li>
         </ul>
       </section>
 
@@ -134,8 +134,20 @@
 </template>
 
 <script>
+import { FolderOpen, Lock, Zap, Palette, Package, Ruler, DollarSign, Check } from 'lucide-vue-next'
+
 export default {
-  name: 'About'
+  name: 'About',
+  components: {
+    FolderOpen,
+    Lock,
+    Zap,
+    Palette,
+    Package,
+    Ruler,
+    DollarSign,
+    Check
+  }
 }
 </script>
 
@@ -161,9 +173,10 @@ export default {
 }
 
 .hero-icon {
-  font-size: 5rem;
+  display: inline-flex;
+  color: var(--color-primary);
   margin-bottom: var(--spacing-lg);
-  filter: drop-shadow(0 4px 12px rgba(99, 102, 241, 0.3));
+  filter: drop-shadow(0 4px 12px rgba(193, 120, 85, 0.3));
   animation: pulse 2s ease-in-out infinite;
 }
 
@@ -248,9 +261,9 @@ export default {
 }
 
 .feature-icon {
-  font-size: 3rem;
+  display: inline-flex;
+  color: var(--color-primary);
   margin-bottom: var(--spacing-md);
-  filter: drop-shadow(0 4px 12px rgba(99, 102, 241, 0.3));
 }
 
 .feature-box h3 {
@@ -334,10 +347,22 @@ export default {
 
 .tech-list li,
 .commitment-list li {
+  list-style: none;
+}
+
+.commitment-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
   color: var(--text-secondary);
   line-height: 1.8;
   margin-bottom: var(--spacing-sm);
   font-size: 1.05rem;
+}
+
+.commitment-check {
+  color: var(--color-primary);
+  flex-shrink: 0;
 }
 
 .tech-list strong,

@@ -7,7 +7,7 @@
           <p class="page-subtitle">Track your image conversion activity and performance</p>
         </div>
         <router-link to="/" class="cta-convert-btn">
-          ⚡ New Conversion
+          <Zap :size="20" :stroke-width="2" /> New Conversion
         </router-link>
       </div>
       
@@ -16,7 +16,7 @@
         <div class="stat-card">
           <div class="stat-header">
             <span class="stat-label">Total Conversions</span>
-            <span class="stat-icon">🔄</span>
+            <span class="stat-icon"><RefreshCw :size="28" :stroke-width="1.5" /></span>
           </div>
           <div class="stat-value">{{ stats.totalConversions.toLocaleString() }}</div>
           <div class="stat-change positive">+{{ stats.conversionsGrowth }}% this month</div>
@@ -25,7 +25,7 @@
         <div class="stat-card">
           <div class="stat-header">
             <span class="stat-label">Data Saved</span>
-            <span class="stat-icon">💾</span>
+            <span class="stat-icon"><HardDrive :size="28" :stroke-width="1.5" /></span>
           </div>
           <div class="stat-value">{{ formatFileSize(stats.dataSaved) }}</div>
           <div class="stat-change positive">{{ stats.averageSavings }}% avg savings</div>
@@ -34,7 +34,7 @@
         <div class="stat-card">
           <div class="stat-header">
             <span class="stat-label">Files Processed</span>
-            <span class="stat-icon">📁</span>
+            <span class="stat-icon"><FolderOpen :size="28" :stroke-width="1.5" /></span>
           </div>
           <div class="stat-value">{{ stats.filesProcessed.toLocaleString() }}</div>
           <div class="stat-change positive">+{{ stats.filesGrowth }}% this week</div>
@@ -43,7 +43,7 @@
         <div class="stat-card">
           <div class="stat-header">
             <span class="stat-label">Avg Processing Time</span>
-            <span class="stat-icon">⚡</span>
+            <span class="stat-icon"><Zap :size="28" :stroke-width="1.5" /></span>
           </div>
           <div class="stat-value">{{ stats.avgProcessingTime }}s</div>
           <div class="stat-change positive">{{ stats.speedImprovement }}% faster</div>
@@ -88,28 +88,28 @@
         <h2 class="section-title">Quick Stats</h2>
         <div class="quick-stats-grid">
           <div class="quick-stat-card">
-            <div class="quick-stat-icon">🎨</div>
+            <div class="quick-stat-icon"><Palette :size="40" :stroke-width="1.5" /></div>
             <div class="quick-stat-content">
               <div class="quick-stat-value">{{ stats.webpConversions.toLocaleString() }}</div>
               <div class="quick-stat-label">WebP Conversions</div>
             </div>
           </div>
           <div class="quick-stat-card">
-            <div class="quick-stat-icon">🖼️</div>
+            <div class="quick-stat-icon"><Image :size="40" :stroke-width="1.5" /></div>
             <div class="quick-stat-content">
               <div class="quick-stat-value">{{ stats.pngConversions.toLocaleString() }}</div>
               <div class="quick-stat-label">PNG Conversions</div>
             </div>
           </div>
           <div class="quick-stat-card">
-            <div class="quick-stat-icon">📸</div>
+            <div class="quick-stat-icon"><Camera :size="40" :stroke-width="1.5" /></div>
             <div class="quick-stat-content">
               <div class="quick-stat-value">{{ stats.jpegConversions.toLocaleString() }}</div>
               <div class="quick-stat-label">JPEG Conversions</div>
             </div>
           </div>
           <div class="quick-stat-card">
-            <div class="quick-stat-icon">🎞️</div>
+            <div class="quick-stat-icon"><Film :size="40" :stroke-width="1.5" /></div>
             <div class="quick-stat-content">
               <div class="quick-stat-value">{{ stats.gifConversions.toLocaleString() }}</div>
               <div class="quick-stat-label">GIF Conversions</div>
@@ -123,7 +123,9 @@
         <h2 class="section-title">Recent Conversions</h2>
         <div class="activity-list">
           <div class="activity-item" v-for="activity in recentActivity" :key="activity.id">
-            <div class="activity-icon">{{ activity.icon }}</div>
+            <div class="activity-icon">
+              <component :is="getActivityIcon(activity.badge)" :size="28" :stroke-width="1.5" />
+            </div>
             <div class="activity-content">
               <div class="activity-text">{{ activity.text }}</div>
               <div class="activity-meta">
@@ -166,8 +168,20 @@
 </template>
 
 <script>
+import { Zap, RefreshCw, HardDrive, FolderOpen, Palette, Image, Camera, Film } from 'lucide-vue-next'
+
 export default {
   name: 'Dashboard',
+  components: {
+    Zap,
+    RefreshCw,
+    HardDrive,
+    FolderOpen,
+    Palette,
+    Image,
+    Camera,
+    Film
+  },
   data() {
     return {
       stats: {
@@ -194,10 +208,10 @@ export default {
         { label: 'Sun', value: 267, percentage: 65 }
       ],
       formatDistribution: [
-        { name: 'WebP', percentage: 42, count: 5823, color: '#10b981' },
-        { name: 'PNG', percentage: 28, count: 4561, color: '#6366f1' },
-        { name: 'JPEG', percentage: 22, count: 3892, color: '#f59e0b' },
-        { name: 'GIF', percentage: 8, count: 1571, color: '#ec4899' }
+        { name: 'WebP', percentage: 42, count: 5823, color: '#C17855' },
+        { name: 'PNG', percentage: 28, count: 4561, color: '#D4A574' },
+        { name: 'JPEG', percentage: 22, count: 3892, color: '#E8B89A' },
+        { name: 'GIF', percentage: 8, count: 1571, color: '#A55F3F' }
       ],
       recentActivity: [
         { id: 1, icon: '🖼️', text: 'Converted photo.jpg to WebP', time: '2 min ago', size: '2.4 MB → 645 KB', savings: 73, badge: 'WebP', badgeClass: 'badge-webp' },
@@ -221,6 +235,15 @@ export default {
       const sizes = ['B', 'KB', 'MB', 'GB']
       const i = Math.floor(Math.log(bytes) / Math.log(k))
       return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i]
+    },
+    getActivityIcon(badge) {
+      const iconMap = {
+        'WebP': 'Palette',
+        'PNG': 'Image',
+        'JPEG': 'Camera',
+        'GIF': 'Film'
+      }
+      return iconMap[badge] || 'Image'
     }
   }
 }

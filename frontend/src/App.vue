@@ -29,8 +29,8 @@ export default {
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f5f5f5;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg-primary);
 }
 
 #app {
@@ -41,5 +41,6 @@ body {
 
 .main-content {
   flex: 1;
+  background: var(--bg-primary);
 }
 </style>

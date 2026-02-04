@@ -6,42 +6,198 @@
         <p class="page-subtitle">Read our latest articles and insights</p>
       </div>
 
-      <!-- Featured Post -->
-      <div class="featured-post" @click="viewPost(posts[0])">
-        <div class="featured-image">
-          <img :src="posts[0].image" :alt="posts[0].title">
-        </div>
-        <div class="featured-content">
-          <span class="post-category">{{ posts[0].category }}</span>
-          <h2 class="featured-title">{{ posts[0].title }}</h2>
-          <p class="featured-excerpt">{{ posts[0].excerpt }}</p>
-          <div class="post-meta">
-            <span class="post-author">{{ posts[0].author }}</span>
-            <span class="post-date">{{ posts[0].date }}</span>
+      <!-- Featured Slider -->
+      <div class="featured-slider">
+        <div class="slider-container">
+          <div
+            class="featured-post"
+            v-for="(post, index) in featuredPosts"
+            :key="post.id"
+            :class="{ active: currentSlide === index }"
+            @click="viewPost(post)"
+            :style="{ backgroundImage: 'url(' + post.image + ')' }"
+          >
+            <div class="featured-content">
+              <span class="post-category">{{ post.category }}</span>
+              <h2 class="featured-title">{{ post.title }}</h2>
+              <p class="featured-excerpt">{{ post.excerpt }}</p>
+              <div class="post-meta">
+                <span class="post-author">By {{ post.author }}</span>
+                <span class="post-date">{{ post.date }}</span>
+              </div>
+            </div>
           </div>
+        </div>
+
+        <div class="slider-dots">
+          <button 
+            v-for="(post, index) in featuredPosts" 
+            :key="index"
+            :class="['dot', { active: currentSlide === index }]"
+            @click="goToSlide(index)"
+            :aria-label="`Go to slide ${index + 1}`"
+          ></button>
+        </div>
+      </div>
+
+      <!-- Filter and Search Bar -->
+      <div class="filter-search-bar">
+        <div class="filter-section">
+          <div class="filter-item">
+            <button class="filter-btn" @click="toggleSortDropdown">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 6h18M7 12h10m-7 6h4"></path>
+              </svg>
+              <span>Sort: {{ getSortLabel }}</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div v-if="showSortDropdown" class="dropdown">
+              <div class="dropdown-item" @click="selectSort('latest')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                Latest
+              </div>
+              <div class="dropdown-item" @click="selectSort('oldest')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 8 14"></polyline>
+                </svg>
+                Oldest
+              </div>
+              <div class="dropdown-item" @click="selectSort('popular')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                </svg>
+                Most Popular
+              </div>
+              <div class="dropdown-item" @click="selectSort('title')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="21" y1="10" x2="3" y2="10"></line>
+                  <line x1="21" y1="6" x2="3" y2="6"></line>
+                  <line x1="21" y1="14" x2="3" y2="14"></line>
+                  <line x1="21" y1="18" x2="3" y2="18"></line>
+                </svg>
+                Title (A-Z)
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-item">
+            <button class="filter-btn" @click="toggleCategoryDropdown">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+              <span>{{ selectedCategory }}</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div v-if="showCategoryDropdown" class="dropdown">
+              <div class="dropdown-item" @click="selectCategory('All')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+                All Categories
+              </div>
+              <div class="dropdown-item" v-for="cat in uniqueCategories" :key="cat" @click="selectCategory(cat)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                </svg>
+                {{ cat }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="search-section">
+          <input
+            type="text"
+            v-model="searchQuery"
+            placeholder="Search articles..."
+            class="search-input"
+          >
+          <button class="search-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+          </button>
         </div>
       </div>
 
       <!-- Blog Posts Grid -->
-      <div class="posts-grid">
-        <div 
-          v-for="post in posts.slice(1)" 
-          :key="post.id" 
-          class="post-card"
-          @click="viewPost(post)"
-        >
-          <div class="post-image">
-            <img :src="post.image" :alt="post.title">
-          </div>
-          <div class="post-content">
-            <span class="post-category">{{ post.category }}</span>
-            <h3 class="post-title">{{ post.title }}</h3>
-            <p class="post-excerpt">{{ post.excerpt }}</p>
-            <div class="post-meta">
-              <span class="post-author">{{ post.author }}</span>
-              <span class="post-date">{{ post.date }}</span>
+      <div class="posts-section">
+        <div class="section-header">
+          <h2 class="section-title">All Articles</h2>
+          <span class="results-count">{{ filteredPosts.length }} articles found</span>
+        </div>
+
+        <div class="posts-grid" v-if="paginatedPosts.length > 0">
+          <div 
+            v-for="post in paginatedPosts" 
+            :key="post.id" 
+            class="post-card"
+            @click="viewPost(post)"
+          >
+            <div class="post-image">
+              <img :src="post.image" :alt="post.title">
+            </div>
+            <div class="post-content">
+              <span class="post-category">{{ post.category }}</span>
+              <h3 class="post-title">{{ post.title }}</h3>
+              <p class="post-excerpt">{{ post.excerpt }}</p>
+              <div class="post-meta">
+                <span class="post-author">{{ post.author }}</span>
+                <span class="post-date">{{ post.date }}</span>
+              </div>
             </div>
           </div>
+        </div>
+
+        <div v-else class="no-results">
+          <h3>No articles found</h3>
+          <p>Try adjusting your search or filters</p>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" v-if="totalPages > 1">
+          <button
+            class="pagination-btn prev-next-btn"
+            @click="currentPage--"
+            :disabled="currentPage === 1"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            Previous
+          </button>
+
+          <button
+            v-for="page in visiblePages"
+            :key="page"
+            :class="['pagination-btn', 'page-number', { active: currentPage === page }]"
+            @click="currentPage = page"
+          >
+            {{ page }}
+          </button>
+
+          <button
+            class="pagination-btn prev-next-btn"
+            @click="currentPage++"
+            :disabled="currentPage === totalPages"
+          >
+            Next
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
         </div>
       </div>
     </div>
@@ -53,7 +209,17 @@ export default {
   name: 'Blog',
   data() {
     return {
-      posts: [
+      currentSlide: 0,
+      selectedCategory: 'All',
+      sortBy: 'latest',
+      searchQuery: '',
+      currentPage: 1,
+      postsPerPage: 16,
+      autoSlideInterval: null,
+      showSortDropdown: false,
+      showCategoryDropdown: false,
+      posts: this.generatePosts(),
+      featuredPostsData: [
         {
           id: 1,
           title: 'The Ultimate Guide to Image & Video Conversion Tools (2026 Edition)',
@@ -65,55 +231,327 @@ export default {
         },
         {
           id: 2,
-          title: 'Modern CSS Techniques',
+          title: 'Modern CSS Techniques for Responsive Design',
           excerpt: 'Discover the latest CSS features and techniques to create stunning responsive designs.',
           author: 'Mike Chen',
-          date: 'Jan 12, 2024',
+          date: 'Jan 28, 2026',
           category: 'Design',
           image: 'https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=800'
         },
         {
           id: 3,
-          title: 'Building Scalable APIs',
+          title: 'Building Scalable APIs with Node.js',
           excerpt: 'Best practices for designing and implementing RESTful APIs that scale with your application.',
           author: 'David Park',
-          date: 'Jan 10, 2024',
+          date: 'Jan 25, 2026',
           category: 'Backend',
           image: 'https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg?auto=compress&cs=tinysrgb&w=800'
-        },
-        {
-          id: 4,
-          title: 'JavaScript Performance Tips',
-          excerpt: 'Optimize your JavaScript code for better performance and faster load times.',
-          author: 'Emily Zhang',
-          date: 'Jan 8, 2024',
-          category: 'Performance',
-          image: 'https://images.pexels.com/photos/1089438/pexels-photo-1089438.jpeg?auto=compress&cs=tinysrgb&w=800'
-        },
-        {
-          id: 5,
-          title: 'UX Design Principles',
-          excerpt: 'Master the core principles of user experience design to create intuitive interfaces.',
-          author: 'Lisa Anderson',
-          date: 'Jan 5, 2024',
-          category: 'UX',
-          image: 'https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=800'
-        },
-        {
-          id: 6,
-          title: 'DevOps Best Practices',
-          excerpt: 'Learn how to streamline your development workflow with modern DevOps practices.',
-          author: 'Tom Wilson',
-          date: 'Jan 3, 2024',
-          category: 'DevOps',
-          image: 'https://images.pexels.com/photos/1181263/pexels-photo-1181263.jpeg?auto=compress&cs=tinysrgb&w=800'
         }
       ]
     }
   },
+  computed: {
+    featuredPosts() {
+      return this.featuredPostsData
+    },
+    uniqueCategories() {
+      return ['Tools', 'Design', 'Backend', 'Performance', 'UX', 'DevOps']
+    },
+    getSortLabel() {
+      const labels = {
+        latest: 'Latest',
+        oldest: 'Oldest',
+        popular: 'Most Popular',
+        title: 'Title (A-Z)'
+      }
+      return labels[this.sortBy] || 'Latest'
+    },
+    filteredPosts() {
+      let filtered = this.posts
+
+      // Category filter
+      if (this.selectedCategory !== 'All') {
+        filtered = filtered.filter(post => post.category === this.selectedCategory)
+      }
+
+      // Search filter
+      if (this.searchQuery.trim()) {
+        const query = this.searchQuery.toLowerCase()
+        filtered = filtered.filter(post => 
+          post.title.toLowerCase().includes(query) ||
+          post.excerpt.toLowerCase().includes(query) ||
+          post.author.toLowerCase().includes(query)
+        )
+      }
+
+      // Sorting
+      const sorted = [...filtered]
+      if (this.sortBy === 'latest') {
+        sorted.sort((a, b) => new Date(b.date) - new Date(a.date))
+      } else if (this.sortBy === 'oldest') {
+        sorted.sort((a, b) => new Date(a.date) - new Date(b.date))
+      } else if (this.sortBy === 'title') {
+        sorted.sort((a, b) => a.title.localeCompare(b.title))
+      }
+
+      return sorted
+    },
+    totalPages() {
+      return Math.ceil(this.filteredPosts.length / this.postsPerPage)
+    },
+    paginatedPosts() {
+      const start = (this.currentPage - 1) * this.postsPerPage
+      const end = start + this.postsPerPage
+      return this.filteredPosts.slice(start, end)
+    },
+    visiblePages() {
+      const pages = []
+      const totalPages = this.totalPages
+      const current = this.currentPage
+
+      if (totalPages <= 3) {
+        for (let i = 1; i <= totalPages; i++) {
+          pages.push(i)
+        }
+      } else {
+        if (current === 1) {
+          pages.push(1, 2, 3)
+        } else if (current === totalPages) {
+          pages.push(totalPages - 2, totalPages - 1, totalPages)
+        } else {
+          pages.push(current - 1, current, current + 1)
+        }
+      }
+
+      return pages
+    }
+  },
   methods: {
+    generatePosts() {
+      const categories = ['Tools', 'Design', 'Backend', 'Performance', 'UX', 'DevOps']
+      const authors = ['Sarah Johnson', 'Mike Chen', 'David Park', 'Emily Zhang', 'Lisa Anderson', 'Tom Wilson', 'Alex Rivera', 'Jessica Lee']
+      const images = [
+        'https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=800',
+        'https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=800',
+        'https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg?auto=compress&cs=tinysrgb&w=800',
+        'https://images.pexels.com/photos/1089438/pexels-photo-1089438.jpeg?auto=compress&cs=tinysrgb&w=800',
+        'https://images.pexels.com/photos/1181263/pexels-photo-1181263.jpeg?auto=compress&cs=tinysrgb&w=800',
+        'https://images.pexels.com/photos/574071/pexels-photo-574071.jpeg?auto=compress&cs=tinysrgb&w=800'
+      ]
+
+      const titles = {
+        Tools: [
+          'The Ultimate Guide to Image & Video Conversion Tools',
+          'Top 10 Developer Tools for 2026',
+          'Best Code Editors and IDEs',
+          'Essential Browser DevTools Tips',
+          'Command Line Tools Every Developer Should Know',
+          'Git Workflow Best Practices',
+          'Package Managers Comparison Guide',
+          'API Testing Tools Overview',
+          'Debugging Tools and Techniques',
+          'Build Tools for Modern Web Development',
+          'Version Control Systems Explained',
+          'Cloud Development Environments',
+          'Code Quality Tools and Linters',
+          'Documentation Generators Guide',
+          'Performance Monitoring Tools',
+          'Security Testing Tools',
+          'Mobile Development Tools',
+          'Database Management Tools',
+          'CI/CD Pipeline Tools',
+          'Container Orchestration Tools'
+        ],
+        Design: [
+          'Modern CSS Techniques for Responsive Design',
+          'UI/UX Design Trends for 2026',
+          'Color Theory for Web Designers',
+          'Typography Best Practices',
+          'Design Systems and Component Libraries',
+          'Figma Tips and Tricks',
+          'Wireframing and Prototyping Guide',
+          'Animation Principles for Web',
+          'Mobile-First Design Strategies',
+          'Grid and Flexbox Layouts',
+          'Dark Mode Design Patterns',
+          'Accessibility in Design',
+          'Icon Design Guidelines',
+          'Responsive Images and SVG',
+          'Design Tokens Implementation',
+          'Motion Design for Web',
+          'Brand Identity in Digital Design',
+          'Design Collaboration Tools',
+          'User Interface Patterns',
+          'Design Critique Best Practices'
+        ],
+        Backend: [
+          'Building Scalable APIs with Node.js',
+          'Microservices Architecture Explained',
+          'RESTful API Design Principles',
+          'GraphQL vs REST Comparison',
+          'Database Design Best Practices',
+          'Authentication and Authorization',
+          'Caching Strategies for APIs',
+          'Message Queues and Event-Driven Architecture',
+          'Server-Side Rendering Techniques',
+          'API Security Best Practices',
+          'Load Balancing and Scaling',
+          'Serverless Architecture Guide',
+          'WebSocket Implementation',
+          'Background Jobs and Workers',
+          'API Rate Limiting Strategies',
+          'Data Migration Techniques',
+          'Backend Testing Strategies',
+          'Logging and Monitoring',
+          'API Versioning Best Practices',
+          'Database Optimization Tips'
+        ],
+        Performance: [
+          'JavaScript Performance Optimization Tips',
+          'Web Performance Metrics That Matter',
+          'Image Optimization Techniques',
+          'Code Splitting and Lazy Loading',
+          'Critical Rendering Path Optimization',
+          'Browser Caching Strategies',
+          'Webpack Bundle Optimization',
+          'Lighthouse Performance Audits',
+          'Core Web Vitals Guide',
+          'CDN Configuration Best Practices',
+          'Asset Compression Techniques',
+          'Memory Leak Detection',
+          'Runtime Performance Optimization',
+          'Progressive Web App Performance',
+          'Network Request Optimization',
+          'Third-Party Script Management',
+          'Font Loading Strategies',
+          'CSS Performance Tips',
+          'JavaScript Bundle Size Reduction',
+          'Server Response Time Optimization'
+        ],
+        UX: [
+          'UX Design Principles Every Developer Should Know',
+          'User Research Methods and Techniques',
+          'Usability Testing Best Practices',
+          'Information Architecture Guide',
+          'User Journey Mapping',
+          'Interaction Design Patterns',
+          'Accessibility Standards (WCAG)',
+          'Mobile UX Best Practices',
+          'Form Design and Validation',
+          'Error Message Design',
+          'Loading States and Skeletons',
+          'Onboarding Flow Design',
+          'Navigation Pattern Design',
+          'Search Interface Design',
+          'Empty States Design',
+          'Feedback and Confirmation Patterns',
+          'Progressive Disclosure Techniques',
+          'Microinteractions in UX',
+          'User Personas Creation',
+          'A/B Testing for UX'
+        ],
+        DevOps: [
+          'DevOps Best Practices for 2026',
+          'Docker Containerization Guide',
+          'Kubernetes Deployment Strategies',
+          'CI/CD Pipeline Implementation',
+          'Infrastructure as Code with Terraform',
+          'Monitoring and Alerting Setup',
+          'Cloud Migration Strategies',
+          'Security in DevOps (DevSecOps)',
+          'GitOps Workflow Guide',
+          'Blue-Green Deployment Techniques',
+          'Canary Releases Best Practices',
+          'Log Aggregation and Analysis',
+          'Secrets Management Solutions',
+          'Disaster Recovery Planning',
+          'Auto-Scaling Configuration',
+          'Container Security Best Practices',
+          'Site Reliability Engineering',
+          'Configuration Management',
+          'Cloud Cost Optimization',
+          'Deployment Automation Tools'
+        ]
+      }
+
+      const posts = []
+      let id = 1
+
+      categories.forEach(category => {
+        for (let i = 0; i < 20; i++) {
+          const date = new Date(2026, 0, 1)
+          date.setDate(date.getDate() - id)
+
+          posts.push({
+            id: id++,
+            title: titles[category][i],
+            excerpt: `Comprehensive guide to ${titles[category][i].toLowerCase()}. Learn best practices and modern techniques.`,
+            author: authors[Math.floor(Math.random() * authors.length)],
+            date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+            category: category,
+            image: images[Math.floor(Math.random() * images.length)]
+          })
+        }
+      })
+
+      return posts
+    },
+    toggleSortDropdown() {
+      this.showSortDropdown = !this.showSortDropdown
+      this.showCategoryDropdown = false
+    },
+    toggleCategoryDropdown() {
+      this.showCategoryDropdown = !this.showCategoryDropdown
+      this.showSortDropdown = false
+    },
+    selectSort(sort) {
+      this.sortBy = sort
+      this.showSortDropdown = false
+    },
+    selectCategory(category) {
+      this.selectedCategory = category
+      this.showCategoryDropdown = false
+    },
     viewPost(post) {
       this.$router.push({ name: 'BlogPost', params: { id: post.id } })
+    },
+    nextSlide() {
+      this.currentSlide = (this.currentSlide + 1) % this.featuredPosts.length
+      this.resetAutoSlide()
+    },
+    prevSlide() {
+      this.currentSlide = this.currentSlide === 0 ? this.featuredPosts.length - 1 : this.currentSlide - 1
+      this.resetAutoSlide()
+    },
+    goToSlide(index) {
+      this.currentSlide = index
+      this.resetAutoSlide()
+    },
+    startAutoSlide() {
+      this.autoSlideInterval = setInterval(() => {
+        this.nextSlide()
+      }, 5000)
+    },
+    resetAutoSlide() {
+      clearInterval(this.autoSlideInterval)
+      this.startAutoSlide()
+    }
+  },
+  mounted() {
+    this.startAutoSlide()
+  },
+  beforeUnmount() {
+    clearInterval(this.autoSlideInterval)
+  },
+  watch: {
+    selectedCategory() {
+      this.currentPage = 1
+    },
+    searchQuery() {
+      this.currentPage = 1
+    },
+    sortBy() {
+      this.currentPage = 1
     }
   }
 }
@@ -128,7 +566,7 @@ export default {
 
 .container {
   width: 100%;
-  max-width: 1280px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 0 var(--spacing-lg);
 }
@@ -136,7 +574,6 @@ export default {
 .blog-header {
   text-align: center;
   margin-bottom: var(--spacing-2xl);
-  animation: fadeIn 0.6s ease-out;
 }
 
 .page-title {
@@ -149,7 +586,6 @@ export default {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.3));
 }
 
 .page-subtitle {
@@ -158,53 +594,52 @@ export default {
   font-weight: 500;
 }
 
-.featured-post {
-  background: var(--bg-card);
-  border-radius: var(--radius-2xl);
-  overflow: hidden;
-  margin-bottom: var(--spacing-2xl);
-  box-shadow: var(--shadow-xl);
-  border: 1px solid var(--border-color);
-  cursor: pointer;
-  transition: all var(--transition-base);
-  animation: slideInRight 0.6s ease-out 0.2s both;
-}
-
-.featured-post:hover {
-  transform: translateY(-8px);
-  border-color: var(--color-primary);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-}
-
-.featured-image {
-  height: 400px;
-  overflow: hidden;
+/* Slider */
+.featured-slider {
   position: relative;
+  margin-bottom: var(--spacing-2xl);
+  overflow: hidden;
+  border-radius: var(--radius-2xl);
 }
 
-.featured-image::after {
-  content: '';
+.slider-container {
+  position: relative;
+  height: 550px;
+}
+
+.featured-post {
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to bottom, transparent 60%, var(--bg-card) 100%);
-}
-
-.featured-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  transition: transform var(--transition-slow);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  display: flex;
+  align-items: flex-end;
+  position: relative;
 }
 
-.featured-post:hover .featured-image img {
-  transform: scale(1.05);
+.featured-post.active {
+  opacity: 1;
+  visibility: visible;
+  z-index: 1;
 }
 
 .featured-content {
-  padding: var(--spacing-xl);
+  padding: var(--spacing-2xl);
+  width: 100%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.5) 60%, transparent 100%);
+  z-index: 2;
 }
 
 .post-category {
@@ -216,12 +651,12 @@ export default {
   font-size: 0.85rem;
   font-weight: 600;
   margin-bottom: var(--spacing-md);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  width: fit-content;
 }
 
 .featured-title {
-  font-size: clamp(1.75rem, 3vw, 2rem);
-  color: var(--text-primary);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  color: white;
   margin-bottom: var(--spacing-md);
   font-weight: 700;
   font-family: 'Poppins', sans-serif;
@@ -230,15 +665,220 @@ export default {
 
 .featured-excerpt {
   font-size: 1.1rem;
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.9);
   line-height: 1.6;
   margin-bottom: var(--spacing-lg);
+}
+
+.post-meta {
+  display: flex;
+  gap: var(--spacing-lg);
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.post-author {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.slider-dots {
+  position: absolute;
+  bottom: var(--spacing-lg);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: var(--spacing-sm);
+  z-index: 10;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.dot.active {
+  background: white;
+  width: 32px;
+  border-radius: 6px;
+}
+
+/* Filter and Search Bar */
+.filter-search-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-2xl);
+  background: var(--bg-card);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-color);
+  flex-wrap: wrap;
+}
+
+.filter-section {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.filter-item {
+  position: relative;
+}
+
+.filter-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  font-family: 'Poppins', sans-serif;
+}
+
+.filter-btn:hover {
+  border-color: var(--color-primary);
+  background: var(--bg-tertiary);
+}
+
+.filter-btn svg {
+  flex-shrink: 0;
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 220px;
+  background: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  z-index: 100;
+  animation: dropdownSlide 0.2s ease;
+  overflow: hidden;
+}
+
+@keyframes dropdownSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  border-left: 3px solid transparent;
+}
+
+.dropdown-item:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-left-color: var(--color-primary);
+}
+
+.dropdown-item svg {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.search-section {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex: 1;
+  max-width: 400px;
+}
+
+.search-input {
+  flex: 1;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  transition: all var(--transition-base);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.search-btn {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--gradient-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  color: white;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.search-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+/* Posts Section */
+.posts-section {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.section-title {
+  font-size: clamp(1.75rem, 3vw, 2rem);
+  color: var(--text-primary);
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+}
+
+.results-count {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
 .posts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 2rem;
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-2xl);
 }
 
 .post-card {
@@ -249,7 +889,6 @@ export default {
   border: 1px solid var(--border-color);
   cursor: pointer;
   transition: all var(--transition-base);
-  animation: scaleIn 0.3s ease-out;
 }
 
 .post-card:hover {
@@ -279,7 +918,7 @@ export default {
 }
 
 .post-title {
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   color: var(--text-primary);
   margin-bottom: var(--spacing-sm);
   font-weight: 700;
@@ -291,25 +930,99 @@ export default {
   color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: var(--spacing-md);
+  font-size: 0.95rem;
 }
 
-.post-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  padding-top: var(--spacing-sm);
-  border-top: 1px solid var(--border-color);
+.no-results {
+  text-align: center;
+  padding: var(--spacing-2xl);
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-color);
 }
 
-.post-author {
-  font-weight: 600;
+.no-results h3 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
+  font-family: 'Poppins', sans-serif;
+}
+
+.no-results p {
   color: var(--text-secondary);
 }
 
-.post-date {
-  color: var(--text-muted);
-  font-size: 0.85rem;
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.pagination-btn {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  min-width: 44px;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  background: var(--bg-tertiary);
+}
+
+.pagination-btn.active {
+  background: var(--gradient-primary);
+  border-color: transparent;
+  color: white;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .slider-container {
+    height: 500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 var(--spacing-md);
+  }
+
+  .filter-search-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-section {
+    justify-content: space-between;
+  }
+
+  .search-section {
+    max-width: 100%;
+  }
+
+  .slider-nav {
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+  }
+
+  .posts-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

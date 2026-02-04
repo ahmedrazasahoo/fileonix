@@ -246,109 +246,129 @@ export default {
 <style scoped>
 .legal-page {
   min-height: 100vh;
-  background: #f8fafc;
-  padding: 2rem 1rem;
+  background: var(--bg-primary);
+  padding: var(--spacing-2xl) var(--spacing-md);
 }
 
 .legal-container {
   max-width: 900px;
   margin: 0 auto;
-  background: white;
-  border-radius: 16px;
-  padding: 3rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  background: var(--bg-card);
+  border-radius: var(--radius-2xl);
+  padding: var(--spacing-2xl);
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--border-color);
+  animation: fadeIn 0.6s ease-out;
+  transition: all var(--transition-base);
+}
+
+.legal-container:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
 }
 
 .legal-header {
   text-align: center;
-  margin-bottom: 3rem;
-  padding-bottom: 2rem;
-  border-bottom: 2px solid #e2e8f0;
+  margin-bottom: var(--spacing-2xl);
+  padding-bottom: var(--spacing-xl);
+  border-bottom: 2px solid var(--color-primary);
 }
 
 .page-title {
-  font-size: 2.5rem;
-  color: #0f172a;
-  margin-bottom: 0.5rem;
+  font-size: clamp(2rem, 5vw, 2.5rem);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
   font-weight: 800;
+  font-family: 'Poppins', sans-serif;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.3));
 }
 
 .last-updated {
-  color: #64748b;
+  color: var(--text-muted);
   font-size: 0.95rem;
+  font-weight: 500;
 }
 
 .legal-content {
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: var(--spacing-2xl);
 }
 
 .legal-section h2 {
-  font-size: 1.8rem;
-  color: #1e293b;
-  margin-bottom: 1rem;
+  font-size: clamp(1.5rem, 3vw, 1.8rem);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
   font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .legal-section h3 {
-  font-size: 1.3rem;
-  color: #334155;
-  margin: 1.5rem 0 0.75rem;
+  font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+  color: var(--text-primary);
+  margin: var(--spacing-lg) 0 var(--spacing-sm);
   font-weight: 600;
+  font-family: 'Poppins', sans-serif;
 }
 
 .legal-section p {
-  color: #475569;
+  color: var(--text-secondary);
   line-height: 1.8;
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-md);
   font-size: 1rem;
 }
 
 .legal-section ul,
 .legal-section ol {
-  margin: 1rem 0;
-  padding-left: 2rem;
+  margin: var(--spacing-md) 0;
+  padding-left: var(--spacing-xl);
 }
 
 .legal-section li {
-  color: #475569;
+  color: var(--text-secondary);
   line-height: 1.8;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--spacing-sm);
 }
 
 .legal-section ol li {
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-md);
 }
 
 .legal-section a {
-  color: var(--primary-color);
+  color: var(--color-primary-light);
   text-decoration: none;
   font-weight: 600;
-  transition: color 0.2s;
+  transition: all var(--transition-base);
 }
 
 .legal-section a:hover {
-  color: var(--primary-dark);
+  color: var(--color-primary);
   text-decoration: underline;
 }
 
 .legal-section strong {
-  color: #1e293b;
-  font-weight: 600;
+  color: var(--text-primary);
+  font-weight: 700;
 }
 
 .contact-box {
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  background: var(--gradient-primary);
   color: white;
-  padding: 2rem;
-  border-radius: 12px;
-  margin: 1.5rem 0;
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-xl);
+  margin: var(--spacing-lg) 0;
+  box-shadow: var(--shadow-glow);
 }
 
 .contact-box p {
   color: white;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--spacing-sm);
 }
 
 .contact-box p:last-child {
@@ -357,8 +377,12 @@ export default {
 
 /* Responsive */
 @media (max-width: 768px) {
+  .legal-page {
+    padding: var(--spacing-lg) var(--spacing-sm);
+  }
+
   .legal-container {
-    padding: 2rem 1.5rem;
+    padding: var(--spacing-lg);
   }
 
   .page-title {

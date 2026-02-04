@@ -10,6 +10,7 @@
     "copy-html-entry": "cp ../fileonix/public/web/index.html ../fileonix/www/web.html"
   },
   "dependencies": {
+    "lucide-vue-next": "^0.563.0",
     "pica": "^9.0.1",
     "socket.io-client": "^4.5.1",
     "vue": "^3.5.24",
