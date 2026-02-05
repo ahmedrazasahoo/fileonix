@@ -119,16 +119,16 @@
                 Resize Images
               </label>
               <div v-if="enableResize" class="resize-inputs">
-                <input 
-                  type="number" 
-                  v-model.number="resizeWidth" 
+                <input
+                  type="number"
+                  v-model.number="resizeWidth"
                   placeholder="Width"
                   class="dimension-input"
                 >
                 <span>×</span>
-                <input 
-                  type="number" 
-                  v-model.number="resizeHeight" 
+                <input
+                  type="number"
+                  v-model.number="resizeHeight"
                   placeholder="Height"
                   class="dimension-input"
                 >
@@ -137,6 +137,110 @@
                   Keep ratio
                 </label>
               </div>
+            </div>
+
+            <!-- Advanced Options Toggle -->
+            <div class="option-group">
+              <button class="advanced-toggle" @click="showAdvanced = !showAdvanced">
+                <Settings :size="18" :stroke-width="2" />
+                {{ showAdvanced ? 'Hide' : 'Show' }} Advanced Options
+                <span class="toggle-icon" :class="{ 'rotated': showAdvanced }">▼</span>
+              </button>
+            </div>
+
+            <!-- Advanced Options Panel -->
+            <div v-if="showAdvanced" class="advanced-panel">
+              <!-- Rotation -->
+              <div class="option-group">
+                <label class="option-label">Rotation</label>
+                <div class="rotation-buttons">
+                  <button
+                    v-for="rot in [0, 90, 180, 270]"
+                    :key="rot"
+                    class="rotation-btn"
+                    :class="{ 'active': rotation === rot }"
+                    @click="rotation = rot"
+                  >
+                    {{ rot }}°
+                  </button>
+                </div>
+              </div>
+
+              <!-- Flip Options -->
+              <div class="option-group">
+                <label class="option-label">Flip</label>
+                <div class="flip-buttons">
+                  <button
+                    class="flip-btn"
+                    :class="{ 'active': flipHorizontal }"
+                    @click="flipHorizontal = !flipHorizontal"
+                  >
+                    ↔️ Horizontal
+                  </button>
+                  <button
+                    class="flip-btn"
+                    :class="{ 'active': flipVertical }"
+                    @click="flipVertical = !flipVertical"
+                  >
+                    ↕️ Vertical
+                  </button>
+                </div>
+              </div>
+
+              <!-- Brightness -->
+              <div class="option-group">
+                <label class="option-label">
+                  Brightness: {{ brightness > 0 ? '+' : '' }}{{ brightness }}
+                </label>
+                <input
+                  type="range"
+                  v-model.number="brightness"
+                  min="-100"
+                  max="100"
+                  class="filter-slider"
+                >
+              </div>
+
+              <!-- Contrast -->
+              <div class="option-group">
+                <label class="option-label">
+                  Contrast: {{ contrast > 0 ? '+' : '' }}{{ contrast }}
+                </label>
+                <input
+                  type="range"
+                  v-model.number="contrast"
+                  min="-100"
+                  max="100"
+                  class="filter-slider"
+                >
+              </div>
+
+              <!-- Saturation -->
+              <div class="option-group">
+                <label class="option-label">
+                  Saturation: {{ saturation > 0 ? '+' : '' }}{{ saturation }}
+                </label>
+                <input
+                  type="range"
+                  v-model.number="saturation"
+                  min="-100"
+                  max="100"
+                  class="filter-slider"
+                >
+              </div>
+
+              <!-- Grayscale -->
+              <div class="option-group">
+                <label class="option-label">
+                  <input type="checkbox" v-model="grayscale" class="checkbox">
+                  Convert to Grayscale
+                </label>
+              </div>
+
+              <!-- Reset Button -->
+              <button class="reset-filters-btn" @click="resetFilters">
+                Reset All Filters
+              </button>
             </div>
           </div>
 
@@ -159,29 +263,53 @@
         <!-- Conversion Results -->
         <div v-if="convertedFiles.length > 0" class="results-section">
           <div class="results-header">
-            <h3 class="results-title"><Check :size="32" class="check-icon" /> Conversion Complete!</h3>
+            <div class="results-title-section">
+              <h3 class="results-title">
+                <Check :size="32" class="check-icon" /> Conversion Complete!
+              </h3>
+              <p class="results-summary">
+                Successfully converted {{ convertedFiles.length }} file{{ convertedFiles.length > 1 ? 's' : '' }} •
+                Total savings: {{ calculateTotalSavings() }}%
+              </p>
+            </div>
             <button class="download-all-btn" @click="downloadAll">
+              <Download :size="18" :stroke-width="2" />
               Download All ({{ convertedFiles.length }})
             </button>
           </div>
 
           <div class="results-grid">
-            <div 
+            <div
               v-for="(file, index) in convertedFiles"
               :key="index"
               class="result-card"
             >
               <div class="result-preview">
                 <img :src="file.url" :alt="file.name">
+                <div v-if="file.savings > 0" class="savings-badge">
+                  <span class="savings-icon">📉</span>
+                  -{{ file.savings }}%
+                </div>
               </div>
               <div class="result-info">
-                <p class="result-name">{{ file.name }}</p>
-                <div class="result-meta">
-                  <span class="meta-item">{{ file.format.toUpperCase() }}</span>
-                  <span class="meta-item">{{ formatFileSize(file.size) }}</span>
-                  <span class="meta-item savings" v-if="file.savings > 0">
-                    -{{ file.savings }}%
-                  </span>
+                <p class="result-name" :title="file.name">{{ file.name }}</p>
+                <div class="result-details">
+                  <div class="detail-row">
+                    <span class="detail-label">Format:</span>
+                    <span class="detail-value format-tag">{{ file.format.toUpperCase() }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Size:</span>
+                    <span class="detail-value">{{ formatFileSize(file.size) }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Dimensions:</span>
+                    <span class="detail-value">{{ file.width }} × {{ file.height }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Original:</span>
+                    <span class="detail-value muted">{{ formatFileSize(file.originalSize) }}</span>
+                  </div>
                 </div>
               </div>
               <div class="result-actions">
@@ -201,6 +329,23 @@
           <div class="comparison-content" @click.stop>
             <button class="close-modal" @click="closeComparison">×</button>
             <h2 class="comparison-title">Before & After Comparison</h2>
+
+            <!-- Comparison Stats Summary -->
+            <div class="comparison-summary">
+              <div class="summary-stat">
+                <span class="summary-label">Original Size</span>
+                <span class="summary-value">{{ formatFileSize(convertedFiles[compareIndex].originalSize) }}</span>
+              </div>
+              <div class="summary-arrow">→</div>
+              <div class="summary-stat">
+                <span class="summary-label">New Size</span>
+                <span class="summary-value success">{{ formatFileSize(convertedFiles[compareIndex].size) }}</span>
+              </div>
+              <div class="summary-stat highlight">
+                <span class="summary-label">Savings</span>
+                <span class="summary-value success">{{ convertedFiles[compareIndex].savings }}%</span>
+              </div>
+            </div>
 
             <div class="comparison-images">
               <div class="comparison-side">
@@ -246,6 +391,14 @@
                   </p>
                 </div>
               </div>
+            </div>
+
+            <!-- Download Button -->
+            <div class="comparison-actions">
+              <button class="modal-download-btn" @click="downloadFile(convertedFiles[compareIndex])">
+                <Download :size="20" :stroke-width="2" />
+                Download Converted File
+              </button>
             </div>
           </div>
         </div>
@@ -495,11 +648,25 @@ export default {
       resizeHeight: null,
       maintainRatio: true,
 
+      // Advanced options
+      showAdvanced: false,
+      rotation: 0,
+      flipHorizontal: false,
+      flipVertical: false,
+      brightness: 0,
+      contrast: 0,
+      saturation: 0,
+      grayscale: false,
+
       outputFormats: [
         { label: 'PNG', value: 'png' },
         { label: 'JPG', value: 'jpeg' },
         { label: 'WebP', value: 'webp' },
-        { label: 'GIF', value: 'gif' }
+        { label: 'GIF', value: 'gif' },
+        { label: 'BMP', value: 'bmp' },
+        { label: 'AVIF', value: 'avif' },
+        { label: 'TIFF', value: 'tiff' },
+        { label: 'ICO', value: 'ico' }
       ]
     }
   },
@@ -586,6 +753,15 @@ export default {
             if (this.resizeHeight) options.height = this.resizeHeight
           }
 
+          // Add advanced options
+          if (this.rotation !== 0) options.rotation = this.rotation
+          if (this.flipHorizontal) options.flipHorizontal = true
+          if (this.flipVertical) options.flipVertical = true
+          if (this.brightness !== 0) options.brightness = this.brightness
+          if (this.contrast !== 0) options.contrast = this.contrast
+          if (this.saturation !== 0) options.saturation = this.saturation
+          if (this.grayscale) options.grayscale = true
+
           const result = await convertImage(fileData.preview, options)
 
           const originalSize = fileData.size
@@ -658,6 +834,22 @@ export default {
 
     scrollToTop() {
       window.scrollTo({ top: 0, behavior: 'smooth' })
+    },
+
+    resetFilters() {
+      this.rotation = 0
+      this.flipHorizontal = false
+      this.flipVertical = false
+      this.brightness = 0
+      this.contrast = 0
+      this.saturation = 0
+      this.grayscale = false
+    },
+
+    calculateTotalSavings() {
+      if (this.convertedFiles.length === 0) return 0
+      const totalSavings = this.convertedFiles.reduce((sum, file) => sum + file.savings, 0)
+      return Math.round(totalSavings / this.convertedFiles.length)
     }
   },
   mounted() {
@@ -1168,6 +1360,146 @@ export default {
   cursor: pointer;
 }
 
+/* Advanced Options */
+.advanced-toggle {
+  width: 100%;
+  background: var(--bg-tertiary);
+  border: 2px solid var(--border-color);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+}
+
+.advanced-toggle:hover {
+  border-color: var(--color-primary);
+  background: var(--bg-hover);
+  transform: translateY(-2px);
+}
+
+.toggle-icon {
+  transition: transform var(--transition-base);
+  display: inline-block;
+  font-size: 0.8rem;
+}
+
+.toggle-icon.rotated {
+  transform: rotate(180deg);
+}
+
+.advanced-panel {
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin-top: var(--spacing-md);
+  display: grid;
+  gap: var(--spacing-lg);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rotation-buttons,
+.flip-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.rotation-btn,
+.flip-btn {
+  background: var(--bg-tertiary);
+  border: 2px solid var(--border-color);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  color: var(--text-secondary);
+  flex: 1;
+  min-width: 70px;
+}
+
+.rotation-btn:hover,
+.flip-btn:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+}
+
+.rotation-btn.active,
+.flip-btn.active {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 4px 12px rgba(193, 120, 85, 0.3);
+}
+
+.filter-slider {
+  width: 100%;
+  height: 8px;
+  border-radius: 5px;
+  background: var(--bg-tertiary);
+  outline: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.filter-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+}
+
+.filter-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  cursor: pointer;
+  border: none;
+  box-shadow: var(--shadow-md);
+}
+
+.reset-filters-btn {
+  background: var(--bg-tertiary);
+  border: 2px solid var(--border-color);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  color: var(--text-secondary);
+  width: 100%;
+}
+
+.reset-filters-btn:hover {
+  background: var(--color-danger);
+  color: white;
+  border-color: transparent;
+  transform: translateY(-2px);
+}
+
 /* Convert Button */
 .convert-btn {
   width: 100%;
@@ -1250,10 +1582,14 @@ export default {
 .results-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: var(--spacing-lg);
   flex-wrap: wrap;
   gap: var(--spacing-md);
+}
+
+.results-title-section {
+  flex: 1;
 }
 
 .results-title {
@@ -1263,10 +1599,31 @@ export default {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
+}
+
+.results-summary {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
 .check-icon {
   color: var(--color-success);
+  filter: drop-shadow(0 2px 8px rgba(16, 185, 129, 0.4));
+  animation: checkPulse 0.5s ease-out;
+}
+
+@keyframes checkPulse {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .download-all-btn {
@@ -1289,35 +1646,83 @@ export default {
 
 .results-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--spacing-lg);
 }
 
 .result-card {
   background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-xl);
   overflow: hidden;
   transition: all var(--transition-base);
+  animation: fadeInUp 0.4s ease-out;
+  animation-fill-mode: both;
 }
 
+.result-card:nth-child(1) { animation-delay: 0.05s; }
+.result-card:nth-child(2) { animation-delay: 0.1s; }
+.result-card:nth-child(3) { animation-delay: 0.15s; }
+.result-card:nth-child(4) { animation-delay: 0.2s; }
+.result-card:nth-child(5) { animation-delay: 0.25s; }
+.result-card:nth-child(n+6) { animation-delay: 0.3s; }
+
 .result-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-6px);
   border-color: var(--color-primary);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-xl);
 }
 
 .result-preview {
   width: 100%;
-  height: 180px;
+  height: 200px;
   overflow: hidden;
   background: var(--bg-tertiary);
+  position: relative;
 }
 
 .result-preview img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform var(--transition-base);
+}
+
+.result-card:hover .result-preview img {
+  transform: scale(1.05);
+}
+
+.savings-badge {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  background: var(--color-success);
+  color: white;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+  animation: bounceIn 0.5s ease-out;
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.savings-icon {
+  font-size: 1rem;
 }
 
 .result-info {
@@ -1325,32 +1730,52 @@ export default {
 }
 
 .result-name {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  font-weight: 700;
+  margin-bottom: var(--spacing-md);
+  word-break: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.result-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-md);
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.detail-label {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.detail-value {
   color: var(--text-primary);
   font-weight: 600;
-  margin-bottom: var(--spacing-sm);
-  word-break: break-word;
 }
 
-.result-meta {
-  display: flex;
-  gap: var(--spacing-xs);
-  flex-wrap: wrap;
-  margin-bottom: var(--spacing-sm);
+.detail-value.muted {
+  color: var(--text-muted);
+  text-decoration: line-through;
 }
 
-.meta-item {
-  font-size: 0.75rem;
-  background: var(--bg-tertiary);
-  color: var(--text-secondary);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--radius-sm);
-  font-weight: 600;
-}
-
-.meta-item.savings {
-  background: var(--color-success);
+.format-tag {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
   color: white;
+  padding: 2px var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 700;
 }
 
 .result-actions {
@@ -1454,9 +1879,66 @@ export default {
 .comparison-title {
   font-size: 2rem;
   color: var(--text-primary);
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
   text-align: center;
   font-weight: 700;
+}
+
+.comparison-summary {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  margin-bottom: var(--spacing-xl);
+  flex-wrap: wrap;
+}
+
+.summary-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md);
+}
+
+.summary-stat.highlight {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.summary-stat.highlight .summary-label,
+.summary-stat.highlight .summary-value {
+  color: white;
+}
+
+.summary-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.summary-value {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  font-weight: 800;
+  font-family: 'Poppins', sans-serif;
+}
+
+.summary-value.success {
+  color: var(--color-success);
+}
+
+.summary-arrow {
+  font-size: 2rem;
+  color: var(--color-primary);
+  font-weight: bold;
 }
 
 .comparison-images {
@@ -1976,10 +2458,74 @@ section {
   }
 }
 
-/* Responsive Design */
+/* ================================
+   COMPREHENSIVE RESPONSIVE DESIGN
+   ================================ */
+
+/* Large Desktop - 1400px and below */
+@media (max-width: 1400px) {
+  .container {
+    max-width: 1200px;
+  }
+
+  .features-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .comparison-content {
+    max-width: 1200px;
+  }
+}
+
+/* Tablet Landscape / Small Desktop - 1024px and below */
 @media (max-width: 1024px) {
+  .container {
+    max-width: 960px;
+    padding: 0 var(--spacing-lg);
+  }
+
+  .hero-converter-section {
+    padding: 60px 0;
+  }
+
+  .upload-zone {
+    padding: var(--spacing-xl);
+  }
+
+  .files-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--spacing-sm);
+  }
+
+  .results-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: var(--spacing-md);
+  }
+
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-lg);
+  }
+
+  .formats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
   .trust-content {
     grid-template-columns: 1fr;
+    gap: var(--spacing-2xl);
+  }
+
+  .trust-text {
+    text-align: center;
+  }
+
+  .trust-badges {
+    justify-content: center;
+  }
+
+  .trust-stats {
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .steps-container {
@@ -1993,31 +2539,302 @@ section {
 
   .comparison-images {
     grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
   }
 
   .comparison-arrow {
     transform: rotate(90deg);
+    font-size: 2.5rem;
+  }
+
+  .comparison-img-wrapper {
+    min-height: 250px;
+    max-height: 400px;
+  }
+
+  .comparison-img-wrapper img {
+    max-height: 400px;
   }
 }
 
+/* Tablet Portrait - 768px and below */
 @media (max-width: 768px) {
-  .features-grid {
-    grid-template-columns: 1fr;
+  .container {
+    max-width: 720px;
+    padding: 0 var(--spacing-md);
   }
 
-  .formats-grid {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  /* Hero Section */
+  .hero-header {
+    margin-bottom: var(--spacing-xl);
   }
 
-  .trust-badges {
-    flex-direction: column;
-    align-items: flex-start;
+  .hero-title {
+    font-size: 2rem;
   }
 
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  /* Upload Zone */
+  .upload-zone {
+    padding: var(--spacing-lg);
+  }
+
+  .upload-icon svg {
+    width: 52px;
+    height: 52px;
+  }
+
+  .upload-title {
+    font-size: 1.5rem;
+  }
+
+  .upload-subtitle {
+    font-size: 1rem;
+  }
+
+  .supported-formats {
+    gap: 8px;
+  }
+
+  .format-badge {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+  }
+
+  /* Files Grid */
   .files-grid {
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   }
 
+  .file-preview {
+    height: 120px;
+  }
+
+  .files-header {
+    flex-direction: row;
+    gap: var(--spacing-md);
+  }
+
+  /* Conversion Options */
+  .conversion-options {
+    padding: var(--spacing-lg);
+  }
+
+  .options-title {
+    font-size: 1.25rem;
+  }
+
+  .options-grid {
+    gap: var(--spacing-lg);
+  }
+
+  .format-buttons {
+    gap: 8px;
+  }
+
+  .format-btn {
+    padding: 10px var(--spacing-md);
+    font-size: 0.9rem;
+  }
+
+  .quality-presets {
+    gap: 8px;
+  }
+
+  .preset-btn {
+    padding: 8px var(--spacing-sm);
+    font-size: 0.8rem;
+  }
+
+  .resize-inputs {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .dimension-input {
+    width: 100%;
+  }
+
+  .maintain-ratio {
+    width: 100%;
+  }
+
+  /* Convert Button */
+  .convert-btn {
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: 1.1rem;
+  }
+
+  /* Results Section */
+  .results-section {
+    padding: var(--spacing-lg);
+  }
+
+  .results-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .results-title {
+    font-size: 1.5rem;
+  }
+
+  .download-all-btn {
+    width: 100%;
+  }
+
+  .results-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: var(--spacing-sm);
+  }
+
+  .result-preview {
+    height: 150px;
+  }
+
+  .result-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .compare-btn,
+  .download-btn {
+    width: 100%;
+  }
+
+  /* Comparison Modal */
+  .comparison-modal {
+    padding: var(--spacing-md);
+  }
+
+  .comparison-content {
+    padding: var(--spacing-lg);
+    max-width: 95%;
+  }
+
+  .comparison-title {
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .comparison-img-wrapper {
+    min-height: 200px;
+    max-height: 300px;
+  }
+
+  .comparison-img-wrapper img {
+    max-height: 300px;
+  }
+
+  .close-modal {
+    width: 40px;
+    height: 40px;
+    font-size: 1.75rem;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+  }
+
+  /* Features Section */
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .feature-card {
+    padding: var(--spacing-lg);
+  }
+
+  .feature-icon svg {
+    width: 48px;
+    height: 48px;
+  }
+
+  .feature-title {
+    font-size: 1.25rem;
+  }
+
+  .feature-description {
+    font-size: 0.95rem;
+  }
+
+  /* How It Works */
+  .step-card {
+    padding: var(--spacing-lg);
+  }
+
+  .step-number {
+    width: 50px;
+    height: 50px;
+    font-size: 1.75rem;
+  }
+
+  .step-icon svg {
+    width: 44px;
+    height: 44px;
+  }
+
+  .step-title {
+    font-size: 1.25rem;
+  }
+
+  .step-description {
+    font-size: 0.95rem;
+  }
+
+  /* Formats Section */
+  .formats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+  }
+
+  .format-item {
+    padding: var(--spacing-lg);
+  }
+
+  /* Trust Section */
+  .trust-title {
+    font-size: 1.75rem;
+  }
+
+  .trust-description {
+    font-size: 1rem;
+  }
+
+  .trust-badges {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+
+  .trust-stats {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .trust-stat-number {
+    font-size: 2.5rem;
+  }
+
+  /* CTA Section */
+  .cta-title {
+    font-size: 1.75rem;
+  }
+
+  .cta-description {
+    font-size: 1rem;
+  }
+
+  .btn-cta {
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: 1.1rem;
+  }
+
+  /* Background Decorations */
   .bg-decoration {
     opacity: 0.05;
   }
@@ -2028,18 +2845,435 @@ section {
   }
 }
 
+/* Mobile Landscape / Large Phone - 640px and below */
+@media (max-width: 640px) {
+  .files-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .results-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .formats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile Portrait - 480px and below */
 @media (max-width: 480px) {
+  .container {
+    max-width: 100%;
+    padding: 0 var(--spacing-sm);
+  }
+
+  /* Hero Section */
+  .hero-converter-section {
+    padding: var(--spacing-xl) 0;
+  }
+
+  .hero-header {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .hero-title {
+    font-size: 1.75rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.9rem;
+  }
+
+  /* Upload Zone */
   .upload-zone {
-    padding: var(--spacing-lg);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .upload-icon svg {
+    width: 48px;
+    height: 48px;
+  }
+
+  .upload-title {
+    font-size: 1.25rem;
+  }
+
+  .upload-subtitle {
+    font-size: 0.9rem;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .supported-formats {
+    gap: 6px;
+  }
+
+  .format-badge {
+    padding: 4px 10px;
+    font-size: 0.7rem;
+  }
+
+  /* Files Preview */
+  .files-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .files-header h3 {
+    font-size: 1.1rem;
+  }
+
+  .clear-btn {
+    width: 100%;
+    padding: 10px var(--spacing-md);
+  }
+
+  .files-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+
+  .file-preview {
+    height: 200px;
+  }
+
+  /* Conversion Options */
+  .conversion-options {
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .options-title {
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .options-grid {
+    gap: var(--spacing-md);
+  }
+
+  .option-label {
+    font-size: 0.9rem;
+  }
+
+  .format-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  .format-btn {
+    padding: 10px;
+    font-size: 0.85rem;
+  }
+
+  .quality-presets {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  .preset-btn {
+    padding: 8px 6px;
+    font-size: 0.75rem;
+  }
+
+  /* Convert Button */
+  .convert-btn {
+    padding: var(--spacing-md);
+    font-size: 1rem;
+  }
+
+  .btn-content svg,
+  .converting-text .spinner {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Results Section */
+  .results-section {
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .results-title {
+    font-size: 1.25rem;
+  }
+
+  .results-title svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .download-all-btn {
+    padding: 10px var(--spacing-md);
+    font-size: 0.9rem;
+  }
+
+  .results-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+
+  .result-preview {
+    height: 200px;
+  }
+
+  .result-info {
+    padding: var(--spacing-sm);
+  }
+
+  .result-name {
+    font-size: 0.85rem;
+  }
+
+  .meta-item {
+    font-size: 0.7rem;
+    padding: 4px 8px;
   }
 
   .result-actions {
-    flex-direction: column;
+    padding: 0 var(--spacing-sm) var(--spacing-sm);
+    gap: 6px;
   }
 
   .compare-btn,
   .download-btn {
+    padding: 10px;
+    font-size: 0.8rem;
+  }
+
+  /* Comparison Modal */
+  .comparison-modal {
+    padding: var(--spacing-sm);
+  }
+
+  .comparison-content {
+    padding: var(--spacing-md);
+    max-height: 95vh;
+  }
+
+  .comparison-title {
+    font-size: 1.25rem;
+    margin-bottom: var(--spacing-md);
+    padding-right: 50px;
+  }
+
+  .close-modal {
+    width: 36px;
+    height: 36px;
+    font-size: 1.5rem;
+    top: 10px;
+    right: 10px;
+  }
+
+  .comparison-images {
+    gap: var(--spacing-md);
+  }
+
+  .comparison-side h3 {
+    font-size: 1.1rem;
+  }
+
+  .comparison-img-wrapper {
+    min-height: 150px;
+    max-height: 250px;
+  }
+
+  .comparison-img-wrapper img {
+    max-height: 250px;
+  }
+
+  .comparison-stats {
+    padding: var(--spacing-sm);
+  }
+
+  .stat-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 10px 0;
+  }
+
+  .stat-label,
+  .stat-value {
+    font-size: 0.85rem;
+  }
+
+  /* Features Section */
+  section {
+    padding: var(--spacing-xl) 0;
+  }
+
+  .section-header {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .section-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .features-grid {
+    gap: var(--spacing-sm);
+  }
+
+  .feature-card {
+    padding: var(--spacing-md);
+  }
+
+  .feature-icon svg {
+    width: 44px;
+    height: 44px;
+  }
+
+  .feature-title {
+    font-size: 1.1rem;
+  }
+
+  .feature-description {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  /* How It Works */
+  .step-card {
+    padding: var(--spacing-md);
+  }
+
+  .step-number {
+    width: 44px;
+    height: 44px;
+    font-size: 1.5rem;
+  }
+
+  .step-icon svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .step-title {
+    font-size: 1.1rem;
+  }
+
+  .step-description {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  /* Formats Section */
+  .formats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-sm);
+  }
+
+  .format-item {
+    padding: var(--spacing-md);
+  }
+
+  .format-item h4 {
+    font-size: 1rem;
+  }
+
+  .format-item p {
+    font-size: 0.85rem;
+  }
+
+  .format-icon svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Trust Section */
+  .trust-title {
+    font-size: 1.5rem;
+  }
+
+  .trust-description {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .badge-item {
+    font-size: 0.85rem;
+    padding: 8px var(--spacing-sm);
+  }
+
+  .trust-stat-card {
+    padding: var(--spacing-md);
+  }
+
+  .trust-stat-number {
+    font-size: 2rem;
+  }
+
+  .trust-stat-label {
+    font-size: 0.9rem;
+  }
+
+  /* CTA Section */
+  .cta-title {
+    font-size: 1.5rem;
+  }
+
+  .cta-description {
+    font-size: 0.9rem;
+  }
+
+  .btn-cta {
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: 1rem;
     width: 100%;
+  }
+
+  /* Background Decorations */
+  .dots-top-right,
+  .dots-left-center,
+  .dots-bottom-right {
+    display: none;
+  }
+
+  .circle-blur-1,
+  .circle-blur-2 {
+    opacity: 0.03;
+  }
+}
+
+/* Extra Small Mobile - 360px and below */
+@media (max-width: 360px) {
+  .hero-title {
+    font-size: 1.5rem;
+  }
+
+  .upload-title {
+    font-size: 1.1rem;
+  }
+
+  .section-title {
+    font-size: 1.35rem;
+  }
+
+  .format-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .quality-presets {
+    grid-template-columns: 1fr;
+  }
+
+  .formats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-card,
+  .step-card,
+  .format-item,
+  .trust-stat-card {
+    padding: var(--spacing-sm);
   }
 }
 </style>

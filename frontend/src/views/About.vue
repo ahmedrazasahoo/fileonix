@@ -413,34 +413,278 @@ export default {
   color: var(--color-primary-dark);
 }
 
-/* Responsive */
+/* ================================
+   COMPREHENSIVE RESPONSIVE DESIGN
+   ================================ */
+
+/* Tablet Landscape - 1024px and below */
+@media (max-width: 1024px) {
+  .about-container {
+    max-width: 960px;
+    padding: 0 var(--spacing-md);
+  }
+
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .steps-container {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .step-box {
+    min-width: 180px;
+  }
+
+  .step-arrow {
+    font-size: 1.75rem;
+  }
+}
+
+/* Tablet Portrait - 768px and below */
 @media (max-width: 768px) {
+  .about-page {
+    padding: var(--spacing-xl) 0;
+  }
+
+  .about-container {
+    padding: 0 var(--spacing-sm);
+  }
+
+  .hero-icon svg {
+    width: 64px;
+    height: 64px;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .about-hero {
+    padding: var(--spacing-xl) 0;
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .about-section {
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .section-text {
+    font-size: 1rem;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .feature-box {
+    padding: var(--spacing-lg);
+  }
+
+  .feature-icon svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .feature-box h3 {
+    font-size: 1.2rem;
+  }
+
+  .feature-box p {
+    font-size: 0.9rem;
+  }
+
+  .steps-container {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  .step-box {
+    min-width: 100%;
+  }
+
+  .step-arrow {
+    transform: rotate(90deg);
+    font-size: 1.5rem;
+  }
+
+  .tech-list,
+  .commitment-list {
+    padding-left: var(--spacing-md);
+  }
+
+  .commitment-item {
+    font-size: 1rem;
+  }
+
+  .cta-button {
+    font-size: 1rem;
+    padding: var(--spacing-sm) var(--spacing-xl);
+  }
+}
+
+/* Mobile Portrait - 480px and below */
+@media (max-width: 480px) {
   .about-page {
     padding: var(--spacing-lg) 0;
   }
 
   .about-container {
-    padding: 0 var(--spacing-md);
+    width: 100%;
+    padding: 0 var(--spacing-sm);
   }
 
-  .hero-icon {
-    font-size: 4rem;
+  .hero-icon svg {
+    width: 56px;
+    height: 56px;
+  }
+
+  .hero-title {
+    font-size: 1.75rem;
+    margin-bottom: 8px;
+  }
+
+  .hero-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .about-hero {
+    padding: var(--spacing-lg) 0;
+    margin-bottom: var(--spacing-lg);
   }
 
   .about-section {
-    padding: var(--spacing-lg);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .section-title {
+    font-size: 1.35rem;
+    margin-bottom: 12px;
+  }
+
+  .section-text {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 12px;
   }
 
   .features-grid {
-    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .feature-box {
+    padding: var(--spacing-md);
+  }
+
+  .feature-icon {
+    margin-bottom: 12px;
+  }
+
+  .feature-icon svg {
+    width: 36px;
+    height: 36px;
+  }
+
+  .feature-box h3 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+
+  .feature-box p {
+    font-size: 0.85rem;
+    line-height: 1.5;
   }
 
   .steps-container {
-    flex-direction: column;
+    gap: 12px;
+  }
+
+  .step-box {
+    padding: var(--spacing-md);
+  }
+
+  .step-number {
+    width: 44px;
+    height: 44px;
+    font-size: 1.25rem;
+    margin-bottom: 12px;
+  }
+
+  .step-box h4 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+
+  .step-box p {
+    font-size: 0.85rem;
+  }
+
+  .tech-list,
+  .commitment-list {
+    padding-left: 12px;
+    margin-top: 12px;
+  }
+
+  .tech-list li,
+  .commitment-list li {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
+  .commitment-item {
+    font-size: 0.9rem;
+    gap: 8px;
+  }
+
+  .commitment-check {
+    width: 18px;
+    height: 18px;
+  }
+
+  .cta-button {
+    font-size: 0.95rem;
+    padding: 12px var(--spacing-lg);
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Extra Small Mobile - 360px and below */
+@media (max-width: 360px) {
+  .hero-title {
+    font-size: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+  }
+
+  .about-section {
+    padding: 12px;
+  }
+
+  .feature-box,
+  .step-box {
+    padding: 12px;
   }
 
   .step-arrow {
-    transform: rotate(90deg);
+    font-size: 1.25rem;
   }
 }
 </style>

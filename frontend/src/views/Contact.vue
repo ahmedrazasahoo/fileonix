@@ -278,9 +278,309 @@ export default {
   animation: slideInRight 0.6s ease-out 0.2s both;
 }
 
+/* ================================
+   COMPREHENSIVE RESPONSIVE DESIGN
+   ================================ */
+
+/* Tablet Landscape - 1024px and below */
+@media (max-width: 1024px) {
+  .container {
+    max-width: 960px;
+    padding: 0 var(--spacing-md);
+  }
+
+  .contact-content {
+    gap: var(--spacing-lg);
+  }
+
+  .info-card {
+    padding: var(--spacing-lg);
+  }
+
+  .faq-section {
+    padding: var(--spacing-lg);
+  }
+}
+
+/* Tablet Portrait - 768px and below */
 @media (max-width: 768px) {
+  .container {
+    padding: 0 var(--spacing-sm);
+  }
+
+  .contact {
+    padding: var(--spacing-xl) 0;
+  }
+
+  .contact-header {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .page-title {
+    font-size: 2rem;
+  }
+
+  .page-subtitle {
+    font-size: 1rem;
+  }
+
   .contact-content {
     grid-template-columns: 1fr;
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .contact-form {
+    padding: var(--spacing-lg);
+  }
+
+  .form-group {
+    margin-bottom: var(--spacing-md);
+  }
+
+  .form-label {
+    font-size: 0.95rem;
+  }
+
+  .form-input,
+  .form-textarea {
+    padding: 12px;
+    font-size: 0.95rem;
+  }
+
+  .form-textarea {
+    min-height: 120px;
+  }
+
+  .submit-btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 1rem;
+  }
+
+  .info-card {
+    padding: var(--spacing-md);
+  }
+
+  .info-icon svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .info-title {
+    font-size: 1.2rem;
+  }
+
+  .info-text {
+    font-size: 0.95rem;
+  }
+
+  .faq-section {
+    padding: var(--spacing-md);
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .faq-grid {
+    gap: var(--spacing-sm);
+  }
+
+  .faq-item {
+    padding: var(--spacing-md);
+  }
+
+  .faq-question {
+    font-size: 1rem;
+  }
+
+  .faq-toggle {
+    font-size: 1.35rem;
+  }
+
+  .faq-answer {
+    margin-top: var(--spacing-sm);
+    padding-top: var(--spacing-sm);
+    font-size: 0.9rem;
+  }
+}
+
+/* Mobile Portrait - 480px and below */
+@media (max-width: 480px) {
+  .contact {
+    padding: var(--spacing-lg) 0;
+  }
+
+  .contact-header {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .page-title {
+    font-size: 1.75rem;
+    margin-bottom: 8px;
+  }
+
+  .page-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .contact-content {
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .contact-form {
+    padding: var(--spacing-md);
+  }
+
+  .form-group {
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .form-label {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+  }
+
+  .form-input,
+  .form-textarea {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+
+  .form-textarea {
+    min-height: 100px;
+  }
+
+  .checkbox-label {
+    font-size: 0.85rem;
+    gap: 8px;
+  }
+
+  .checkbox-input {
+    width: 16px;
+    height: 16px;
+  }
+
+  .submit-btn {
+    padding: 12px var(--spacing-md);
+    font-size: 0.95rem;
+  }
+
+  .success-message {
+    padding: 12px;
+    font-size: 0.9rem;
+    gap: 8px;
+  }
+
+  .success-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .info-section {
+    gap: var(--spacing-md);
+  }
+
+  .info-card {
+    padding: var(--spacing-md);
+  }
+
+  .info-icon svg {
+    width: 36px;
+    height: 36px;
+  }
+
+  .info-title {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+
+  .info-text {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .social-links {
+    gap: 8px;
+  }
+
+  .social-link {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+
+  .faq-section {
+    padding: var(--spacing-md);
+  }
+
+  .section-title {
+    font-size: 1.35rem;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .faq-grid {
+    gap: 10px;
+  }
+
+  .faq-item {
+    padding: 12px;
+  }
+
+  .faq-question {
+    font-size: 0.9rem;
+    gap: 10px;
+  }
+
+  .faq-toggle {
+    font-size: 1.25rem;
+    min-width: 20px;
+  }
+
+  .faq-answer {
+    margin-top: 10px;
+    padding-top: 10px;
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+}
+
+/* Extra Small Mobile - 360px and below */
+@media (max-width: 360px) {
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+  }
+
+  .contact-form,
+  .info-card,
+  .faq-section {
+    padding: 12px;
+  }
+
+  .form-input,
+  .form-textarea,
+  .submit-btn {
+    font-size: 0.85rem;
+  }
+
+  .info-title,
+  .faq-question {
+    font-size: 1rem;
+  }
+
+  .social-links {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .social-link {
+    width: 100%;
+    text-align: center;
   }
 }
 
