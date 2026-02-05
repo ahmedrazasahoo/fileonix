@@ -130,7 +130,8 @@ export default {
 }
 
 .legal-container {
-  max-width: 900px;
+  max-width: 1200px;
+  width: 95%;
   margin: 0 auto;
   background: var(--bg-card);
   border-radius: var(--radius-2xl);

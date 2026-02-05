@@ -1418,8 +1418,8 @@ export default {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-2xl);
   padding: var(--spacing-2xl);
-  max-width: 1200px;
-  width: 100%;
+  max-width: 1400px;
+  width: 95%;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
