@@ -1,7 +1,7 @@
 app_name = "fileonix"
 app_title = "Fileonix"
-app_publisher = "ahmedrazasahoo"
-app_description = "this app used for personal use practice"
+app_publisher = "7ahmed8raza6@gmail.com"
+app_description = "This app used for the vue file converter and images converter"
 app_email = "7ahmed8raza6@gmail.com"
 app_license = "mit"
 
@@ -247,5 +247,3 @@ app_license = "mit"
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
 
-
-website_route_rules = [{'from_route': '/frontend/<path:app_path>', 'to_route': 'web'},]

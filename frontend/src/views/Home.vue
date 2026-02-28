@@ -2034,6 +2034,34 @@ export default {
   font-weight: 700;
 }
 
+.comparison-actions {
+  margin-top: var(--spacing-xl);
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);
+}
+
+.modal-download-btn {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  color: white;
+  border: none;
+  padding: var(--spacing-md) var(--spacing-2xl);
+  border-radius: var(--radius-xl);
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  box-shadow: 0 8px 20px rgba(193, 120, 85, 0.3);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.modal-download-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(193, 120, 85, 0.5);
+}
+
 /* Section Styling */
 section {
   position: relative;

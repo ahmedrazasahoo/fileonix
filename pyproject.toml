@@ -1,9 +1,9 @@
 [project]
 name = "fileonix"
 authors = [
-    { name = "ahmedrazasahoo", email = "7ahmed8raza6@gmail.com"}
+    { name = "7ahmed8raza6@gmail.com", email = "7ahmed8raza6@gmail.com"}
 ]
-description = "this app used for personal use practice"
+description = "This app used for the vue file converter and images converter"
 requires-python = ">=3.10"
 readme = "README.md"
 dynamic = ["version"]
