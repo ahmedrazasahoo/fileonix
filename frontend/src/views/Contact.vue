@@ -98,24 +98,24 @@
           <div class="info-card">
             <div class="info-icon"><MapPin :size="48" :stroke-width="1.5" /></div>
             <h3 class="info-title">Visit Us</h3>
-            <p class="info-text">123 Main Street<br>San Francisco, CA 94102</p>
+            <p class="info-text">Online-only service<br>Available worldwide</p>
           </div>
 
           <div class="info-card">
             <div class="info-icon"><Mail :size="48" :stroke-width="1.5" /></div>
             <h3 class="info-title">Email Us</h3>
             <p class="info-text">
-              <a href="mailto:info@myapp.com">info@myapp.com</a><br>
-              <a href="mailto:support@myapp.com">support@myapp.com</a>
+              <a href="mailto:info@fileonix.com">info@fileonix.com</a><br>
+              <a href="mailto:support@fileonix.com">support@fileonix.com</a>
             </p>
           </div>
 
           <div class="info-card">
             <div class="info-icon"><Phone :size="48" :stroke-width="1.5" /></div>
-            <h3 class="info-title">Call Us</h3>
+            <h3 class="info-title">Support</h3>
             <p class="info-text">
-              <a href="tel:+15551234567">+1 (555) 123-4567</a><br>
-              Mon-Fri: 9am - 6pm PST
+              <a href="mailto:support@fileonix.com">support@fileonix.com</a><br>
+              Response within 24 hours
             </p>
           </div>
 
@@ -123,10 +123,8 @@
             <div class="info-icon"><Globe :size="48" :stroke-width="1.5" /></div>
             <h3 class="info-title">Follow Us</h3>
             <div class="social-links">
-              <a href="#" class="social-link">Twitter</a>
-              <a href="#" class="social-link">Facebook</a>
-              <a href="#" class="social-link">LinkedIn</a>
-              <a href="#" class="social-link">Instagram</a>
+              <a href="https://twitter.com/fileonix" target="_blank" rel="noopener" class="social-link">Twitter</a>
+              <a href="https://github.com/fileonix" target="_blank" rel="noopener" class="social-link">GitHub</a>
             </div>
           </div>
         </div>
@@ -157,7 +155,7 @@
 </template>
 
 <script>
-import { MapPin, Mail, Phone, Globe, Check } from 'lucide-vue-next'
+import { MapPin, Mail, Phone, Globe, Check, Send } from 'lucide-vue-next'
 
 export default {
   name: 'Contact',
@@ -166,7 +164,8 @@ export default {
     Mail,
     Phone,
     Globe,
-    Check
+    Check,
+    Send
   },
   data() {
     return {
@@ -182,35 +181,39 @@ export default {
       openFaq: null,
       faqs: [
         {
-          question: 'What are your business hours?',
-          answer: 'We are open Monday through Friday, 9:00 AM to 6:00 PM PST. We are closed on weekends and major holidays.'
+          question: 'How do I convert an image?',
+          answer: 'Simply go to the home page, drag and drop your image (or click to browse), choose your desired output format and quality settings, then click Convert. Your file will be processed instantly in your browser.'
         },
         {
           question: 'How quickly do you respond to inquiries?',
-          answer: 'We aim to respond to all inquiries within 24 hours on business days. Urgent matters are typically addressed within 2-4 hours.'
+          answer: 'We aim to respond to all email inquiries within 24 hours. Use the contact form above or email us directly at support@fileonix.com.'
         },
         {
-          question: 'Do you offer phone support?',
-          answer: 'Yes, we offer phone support during business hours. You can reach us at +1 (555) 123-4567 for immediate assistance.'
+          question: 'Are my files uploaded to your servers?',
+          answer: 'No. FileOnix processes all conversions locally in your browser using the HTML5 Canvas API. Your files never leave your device and we have zero access to them.'
         },
         {
-          question: 'Can I visit your office in person?',
-          answer: 'Yes! We welcome visitors by appointment. Please contact us in advance to schedule a visit to our San Francisco office.'
+          question: 'What image formats are supported?',
+          answer: 'FileOnix supports PNG, JPG/JPEG, WebP, and GIF formats for both input and output. You can also resize images and adjust quality settings during conversion.'
+        },
+        {
+          question: 'Is FileOnix really free?',
+          answer: 'Yes, FileOnix is completely free with no subscriptions, no limits, and no watermarks. We display ads via Google AdSense to keep the service free for everyone.'
         },
         {
           question: 'What should I include in my support request?',
-          answer: 'Please include as much detail as possible: your account information, a description of the issue, steps to reproduce it, and any relevant screenshots.'
-        },
-        {
-          question: 'Do you have a customer portal?',
-          answer: 'Yes, registered users can access our customer portal through the Dashboard section after logging in to their account.'
+          answer: 'Please describe the issue clearly, including which browser and device you are using, the image format you are trying to convert, and any error messages you see.'
         }
       ]
     }
   },
   methods: {
     submitForm() {
-      console.log('Form submitted:', this.form)
+      const subject = encodeURIComponent(`[FileOnix Contact] ${this.form.subject || 'General Inquiry'}`)
+      const body = encodeURIComponent(
+        `Name: ${this.form.name}\nEmail: ${this.form.email}\nPhone: ${this.form.phone || 'N/A'}\n\nMessage:\n${this.form.message}`
+      )
+      window.location.href = `mailto:info@fileonix.com?subject=${subject}&body=${body}`
       this.submitted = true
       setTimeout(() => {
         this.submitted = false

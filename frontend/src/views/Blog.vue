@@ -203,360 +203,181 @@
     </div>
   </div>
 </template>
+<script setup>
+import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
+import { createListResource } from 'frappe-ui'
+import { useRouter, useRoute } from 'vue-router'
 
-<script>
-export default {
-  name: 'Blog',
-  data() {
-    return {
-      currentSlide: 0,
-      selectedCategory: 'All',
-      sortBy: 'latest',
-      searchQuery: '',
-      currentPage: 1,
-      postsPerPage: 16,
-      autoSlideInterval: null,
-      showSortDropdown: false,
-      showCategoryDropdown: false,
-      posts: this.generatePosts(),
-      featuredPostsData: [
-        {
-          id: 1,
-          title: 'The Ultimate Guide to Image & Video Conversion Tools (2026 Edition)',
-          excerpt: 'Explore the best image and video conversion tools available in 2026, from basic format converters to advanced editing solutions.',
-          author: 'Sarah Johnson',
-          date: 'Feb 3, 2026',
-          category: 'Tools',
-          image: 'https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=800'
-        },
-        {
-          id: 2,
-          title: 'Modern CSS Techniques for Responsive Design',
-          excerpt: 'Discover the latest CSS features and techniques to create stunning responsive designs.',
-          author: 'Mike Chen',
-          date: 'Jan 28, 2026',
-          category: 'Design',
-          image: 'https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=800'
-        },
-        {
-          id: 3,
-          title: 'Building Scalable APIs with Node.js',
-          excerpt: 'Best practices for designing and implementing RESTful APIs that scale with your application.',
-          author: 'David Park',
-          date: 'Jan 25, 2026',
-          category: 'Backend',
-          image: 'https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg?auto=compress&cs=tinysrgb&w=800'
-        }
-      ]
-    }
+const router = useRouter()
+const route = useRoute()
+
+// ─── Resources ───────────────────────────────────────────
+const postsResource = createListResource({
+  doctype: 'Blog Post',
+  fields: ['name', 'title', 'blog_category', 'blogger', 
+           'meta_description', 'published_on', 'featured', 
+           'blog_intro', 'meta_image'],
+  pageLength: 200,
+  auto: true,
+  onSuccess(data) {
+    console.log('✅ Posts loaded:', data)
   },
-  computed: {
-    featuredPosts() {
-      return this.featuredPostsData
-    },
-    uniqueCategories() {
-      return ['Tools', 'Design', 'Backend', 'Performance', 'UX', 'DevOps']
-    },
-    getSortLabel() {
-      const labels = {
-        latest: 'Latest',
-        oldest: 'Oldest',
-        popular: 'Most Popular',
-        title: 'Title (A-Z)'
-      }
-      return labels[this.sortBy] || 'Latest'
-    },
-    filteredPosts() {
-      let filtered = this.posts
+  onError(err) {
+    console.log('❌ Posts error:', err)
+  }
+})
 
-      // Category filter
-      if (this.selectedCategory !== 'All') {
-        filtered = filtered.filter(post => post.category === this.selectedCategory)
-      }
-
-      // Search filter
-      if (this.searchQuery.trim()) {
-        const query = this.searchQuery.toLowerCase()
-        filtered = filtered.filter(post => 
-          post.title.toLowerCase().includes(query) ||
-          post.excerpt.toLowerCase().includes(query) ||
-          post.author.toLowerCase().includes(query)
-        )
-      }
-
-      // Sorting
-      const sorted = [...filtered]
-      if (this.sortBy === 'latest') {
-        sorted.sort((a, b) => new Date(b.date) - new Date(a.date))
-      } else if (this.sortBy === 'oldest') {
-        sorted.sort((a, b) => new Date(a.date) - new Date(b.date))
-      } else if (this.sortBy === 'title') {
-        sorted.sort((a, b) => a.title.localeCompare(b.title))
-      }
-
-      return sorted
-    },
-    totalPages() {
-      return Math.ceil(this.filteredPosts.length / this.postsPerPage)
-    },
-    paginatedPosts() {
-      const start = (this.currentPage - 1) * this.postsPerPage
-      const end = start + this.postsPerPage
-      return this.filteredPosts.slice(start, end)
-    },
-    visiblePages() {
-      const pages = []
-      const totalPages = this.totalPages
-      const current = this.currentPage
-
-      if (totalPages <= 3) {
-        for (let i = 1; i <= totalPages; i++) {
-          pages.push(i)
-        }
-      } else {
-        if (current === 1) {
-          pages.push(1, 2, 3)
-        } else if (current === totalPages) {
-          pages.push(totalPages - 2, totalPages - 1, totalPages)
-        } else {
-          pages.push(current - 1, current, current + 1)
-        }
-      }
-
-      return pages
-    }
+const categoriesResource = createListResource({
+  doctype: 'Blog Category',
+  fields: ['name', 'title', 'preview_image'],
+  pageLength: 50,
+  auto: true,
+  onSuccess(data) {
+    console.log('✅ Categories loaded:', data)
   },
-  methods: {
-    generatePosts() {
-      const categories = ['Tools', 'Design', 'Backend', 'Performance', 'UX', 'DevOps']
-      const authors = ['Sarah Johnson', 'Mike Chen', 'David Park', 'Emily Zhang', 'Lisa Anderson', 'Tom Wilson', 'Alex Rivera', 'Jessica Lee']
-      const images = [
-        'https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=800',
-        'https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=800',
-        'https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg?auto=compress&cs=tinysrgb&w=800',
-        'https://images.pexels.com/photos/1089438/pexels-photo-1089438.jpeg?auto=compress&cs=tinysrgb&w=800',
-        'https://images.pexels.com/photos/1181263/pexels-photo-1181263.jpeg?auto=compress&cs=tinysrgb&w=800',
-        'https://images.pexels.com/photos/574071/pexels-photo-574071.jpeg?auto=compress&cs=tinysrgb&w=800'
-      ]
+})
 
-      const titles = {
-        Tools: [
-          'The Ultimate Guide to Image & Video Conversion Tools',
-          'Top 10 Developer Tools for 2026',
-          'Best Code Editors and IDEs',
-          'Essential Browser DevTools Tips',
-          'Command Line Tools Every Developer Should Know',
-          'Git Workflow Best Practices',
-          'Package Managers Comparison Guide',
-          'API Testing Tools Overview',
-          'Debugging Tools and Techniques',
-          'Build Tools for Modern Web Development',
-          'Version Control Systems Explained',
-          'Cloud Development Environments',
-          'Code Quality Tools and Linters',
-          'Documentation Generators Guide',
-          'Performance Monitoring Tools',
-          'Security Testing Tools',
-          'Mobile Development Tools',
-          'Database Management Tools',
-          'CI/CD Pipeline Tools',
-          'Container Orchestration Tools'
-        ],
-        Design: [
-          'Modern CSS Techniques for Responsive Design',
-          'UI/UX Design Trends for 2026',
-          'Color Theory for Web Designers',
-          'Typography Best Practices',
-          'Design Systems and Component Libraries',
-          'Figma Tips and Tricks',
-          'Wireframing and Prototyping Guide',
-          'Animation Principles for Web',
-          'Mobile-First Design Strategies',
-          'Grid and Flexbox Layouts',
-          'Dark Mode Design Patterns',
-          'Accessibility in Design',
-          'Icon Design Guidelines',
-          'Responsive Images and SVG',
-          'Design Tokens Implementation',
-          'Motion Design for Web',
-          'Brand Identity in Digital Design',
-          'Design Collaboration Tools',
-          'User Interface Patterns',
-          'Design Critique Best Practices'
-        ],
-        Backend: [
-          'Building Scalable APIs with Node.js',
-          'Microservices Architecture Explained',
-          'RESTful API Design Principles',
-          'GraphQL vs REST Comparison',
-          'Database Design Best Practices',
-          'Authentication and Authorization',
-          'Caching Strategies for APIs',
-          'Message Queues and Event-Driven Architecture',
-          'Server-Side Rendering Techniques',
-          'API Security Best Practices',
-          'Load Balancing and Scaling',
-          'Serverless Architecture Guide',
-          'WebSocket Implementation',
-          'Background Jobs and Workers',
-          'API Rate Limiting Strategies',
-          'Data Migration Techniques',
-          'Backend Testing Strategies',
-          'Logging and Monitoring',
-          'API Versioning Best Practices',
-          'Database Optimization Tips'
-        ],
-        Performance: [
-          'JavaScript Performance Optimization Tips',
-          'Web Performance Metrics That Matter',
-          'Image Optimization Techniques',
-          'Code Splitting and Lazy Loading',
-          'Critical Rendering Path Optimization',
-          'Browser Caching Strategies',
-          'Webpack Bundle Optimization',
-          'Lighthouse Performance Audits',
-          'Core Web Vitals Guide',
-          'CDN Configuration Best Practices',
-          'Asset Compression Techniques',
-          'Memory Leak Detection',
-          'Runtime Performance Optimization',
-          'Progressive Web App Performance',
-          'Network Request Optimization',
-          'Third-Party Script Management',
-          'Font Loading Strategies',
-          'CSS Performance Tips',
-          'JavaScript Bundle Size Reduction',
-          'Server Response Time Optimization'
-        ],
-        UX: [
-          'UX Design Principles Every Developer Should Know',
-          'User Research Methods and Techniques',
-          'Usability Testing Best Practices',
-          'Information Architecture Guide',
-          'User Journey Mapping',
-          'Interaction Design Patterns',
-          'Accessibility Standards (WCAG)',
-          'Mobile UX Best Practices',
-          'Form Design and Validation',
-          'Error Message Design',
-          'Loading States and Skeletons',
-          'Onboarding Flow Design',
-          'Navigation Pattern Design',
-          'Search Interface Design',
-          'Empty States Design',
-          'Feedback and Confirmation Patterns',
-          'Progressive Disclosure Techniques',
-          'Microinteractions in UX',
-          'User Personas Creation',
-          'A/B Testing for UX'
-        ],
-        DevOps: [
-          'DevOps Best Practices for 2026',
-          'Docker Containerization Guide',
-          'Kubernetes Deployment Strategies',
-          'CI/CD Pipeline Implementation',
-          'Infrastructure as Code with Terraform',
-          'Monitoring and Alerting Setup',
-          'Cloud Migration Strategies',
-          'Security in DevOps (DevSecOps)',
-          'GitOps Workflow Guide',
-          'Blue-Green Deployment Techniques',
-          'Canary Releases Best Practices',
-          'Log Aggregation and Analysis',
-          'Secrets Management Solutions',
-          'Disaster Recovery Planning',
-          'Auto-Scaling Configuration',
-          'Container Security Best Practices',
-          'Site Reliability Engineering',
-          'Configuration Management',
-          'Cloud Cost Optimization',
-          'Deployment Automation Tools'
-        ]
-      }
+// ─── Helpers ─────────────────────────────────────────────
+const fallbackImage = 'https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=800'
 
-      const posts = []
-      let id = 1
-
-      categories.forEach(category => {
-        for (let i = 0; i < 20; i++) {
-          const date = new Date(2026, 0, 1)
-          date.setDate(date.getDate() - id)
-
-          posts.push({
-            id: id++,
-            title: titles[category][i],
-            excerpt: `Comprehensive guide to ${titles[category][i].toLowerCase()}. Learn best practices and modern techniques.`,
-            author: authors[Math.floor(Math.random() * authors.length)],
-            date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-            category: category,
-            image: images[Math.floor(Math.random() * images.length)]
-          })
-        }
-      })
-
-      return posts
-    },
-    toggleSortDropdown() {
-      this.showSortDropdown = !this.showSortDropdown
-      this.showCategoryDropdown = false
-    },
-    toggleCategoryDropdown() {
-      this.showCategoryDropdown = !this.showCategoryDropdown
-      this.showSortDropdown = false
-    },
-    selectSort(sort) {
-      this.sortBy = sort
-      this.showSortDropdown = false
-    },
-    selectCategory(category) {
-      this.selectedCategory = category
-      this.showCategoryDropdown = false
-    },
-    viewPost(post) {
-      this.$router.push({ name: 'BlogPost', params: { id: post.id } })
-    },
-    nextSlide() {
-      this.currentSlide = (this.currentSlide + 1) % this.featuredPosts.length
-      this.resetAutoSlide()
-    },
-    prevSlide() {
-      this.currentSlide = this.currentSlide === 0 ? this.featuredPosts.length - 1 : this.currentSlide - 1
-      this.resetAutoSlide()
-    },
-    goToSlide(index) {
-      this.currentSlide = index
-      this.resetAutoSlide()
-    },
-    startAutoSlide() {
-      this.autoSlideInterval = setInterval(() => {
-        this.nextSlide()
-      }, 5000)
-    },
-    resetAutoSlide() {
-      clearInterval(this.autoSlideInterval)
-      this.startAutoSlide()
-    }
-  },
-  mounted() {
-    this.startAutoSlide()
-  },
-  beforeUnmount() {
-    clearInterval(this.autoSlideInterval)
-  },
-  watch: {
-    selectedCategory() {
-      this.currentPage = 1
-    },
-    searchQuery() {
-      this.currentPage = 1
-    },
-    sortBy() {
-      this.currentPage = 1
-    }
+function mapPost(p) {
+  return {
+    id: p.name,
+    title: p.title || '',
+    excerpt: p.blog_intro || p.meta_description || '',
+    author: p.blogger || 'Admin',
+    date: p.published_on
+      ? new Date(p.published_on).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      : '',
+    category: p.blog_category || 'General',
+    image: p.meta_image ? `/${p.meta_image}` : fallbackImage,
+    featured: !!p.featured,
   }
 }
-</script>
 
+// ─── State ───────────────────────────────────────────────
+const currentSlide = ref(0)
+const currentPage = ref(1)
+const postsPerPage = 16
+const autoSlideInterval = ref(null)
+const selectedCategory = ref('All')
+const sortBy = ref('latest')
+const searchQuery = ref('')
+const showSortDropdown = ref(false)
+const showCategoryDropdown = ref(false)
+
+// ─── Computed ────────────────────────────────────────────
+const posts = computed(() => (postsResource.data || []).map(mapPost))
+
+const featuredPosts = computed(() => {
+  const f = posts.value.filter(p => p.featured)
+  return f.length ? f.slice(0, 5) : posts.value.slice(0, 3)
+})
+
+const uniqueCategories = computed(() =>
+  (categoriesResource.data || []).map(c => c.title || c.name)
+)
+
+const isLoading = computed(() => postsResource.list?.loading)
+
+const filteredPosts = computed(() => {
+  let list = posts.value
+  if (selectedCategory.value !== 'All') {
+    list = list.filter(p => p.category === selectedCategory.value)
+  }
+  if (searchQuery.value.trim()) {
+    const q = searchQuery.value.toLowerCase()
+    list = list.filter(p =>
+      p.title.toLowerCase().includes(q) ||
+      p.excerpt.toLowerCase().includes(q) ||
+      p.author.toLowerCase().includes(q)
+    )
+  }
+  const sorted = [...list]
+  if (sortBy.value === 'latest') sorted.sort((a, b) => new Date(b.date) - new Date(a.date))
+  else if (sortBy.value === 'oldest') sorted.sort((a, b) => new Date(a.date) - new Date(b.date))
+  else if (sortBy.value === 'title') sorted.sort((a, b) => a.title.localeCompare(b.title))
+  return sorted
+})
+
+const totalPages = computed(() => Math.ceil(filteredPosts.value.length / postsPerPage))
+
+const paginatedPosts = computed(() => {
+  const start = (currentPage.value - 1) * postsPerPage
+  return filteredPosts.value.slice(start, start + postsPerPage)
+})
+
+const visiblePages = computed(() => {
+  const total = totalPages.value
+  const cur = currentPage.value
+  if (total <= 3) return Array.from({ length: total }, (_, i) => i + 1)
+  if (cur === 1) return [1, 2, 3]
+  if (cur === total) return [total - 2, total - 1, total]
+  return [cur - 1, cur, cur + 1]
+})
+
+const getSortLabel = computed(() => {
+  return { latest: 'Latest', oldest: 'Oldest', popular: 'Most Popular', title: 'Title (A-Z)' }[sortBy.value] || 'Latest'
+})
+
+// ─── Methods ─────────────────────────────────────────────
+function viewPost(post) {
+  router.push({ name: 'BlogPost', params: { id: post.id } })
+}
+
+function goToSlide(index) {
+  currentSlide.value = index
+  resetAutoSlide()
+}
+
+function nextSlide() {
+  if (!featuredPosts.value.length) return
+  currentSlide.value = (currentSlide.value + 1) % featuredPosts.value.length
+}
+
+function startAutoSlide() {
+  autoSlideInterval.value = setInterval(nextSlide, 5000)
+}
+
+function resetAutoSlide() {
+  clearInterval(autoSlideInterval.value)
+  startAutoSlide()
+}
+
+function toggleSortDropdown() {
+  showSortDropdown.value = !showSortDropdown.value
+  showCategoryDropdown.value = false
+}
+
+function toggleCategoryDropdown() {
+  showCategoryDropdown.value = !showCategoryDropdown.value
+  showSortDropdown.value = false
+}
+
+function selectSort(val) {
+  sortBy.value = val
+  showSortDropdown.value = false
+  currentPage.value = 1
+}
+
+function selectCategory(val) {
+  selectedCategory.value = val
+  showCategoryDropdown.value = false
+  currentPage.value = 1
+}
+
+// ─── Lifecycle ───────────────────────────────────────────
+onMounted(() => {
+  if (route.query.category) {
+    selectedCategory.value = route.query.category
+  }
+  startAutoSlide()
+})
+
+onBeforeUnmount(() => {
+  clearInterval(autoSlideInterval.value)
+})
+</script>
 <style scoped>
 .blog {
   min-height: 100vh;

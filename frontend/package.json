@@ -10,6 +10,7 @@
     "copy-html-entry": "cp ../fileonix/public/web/index.html ../fileonix/www/web.html"
   },
   "dependencies": {
+    "frappe-ui": "^0.1.264",
     "lucide-vue-next": "^0.563.0",
     "pica": "^9.0.1",
     "socket.io-client": "^4.5.1",
@@ -17,10 +18,13 @@
     "vue-router": "^5.0.2"
   },
   "devDependencies": {
+    "@iconify-json/lucide": "^1.2.95",
     "@types/node": "^24.10.1",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/tsconfig": "^0.8.1",
     "typescript": "~5.9.3",
+    "unplugin-icons": "^23.0.1",
+    "unplugin-vue-components": "^31.0.0",
     "vite": "^7.2.4",
     "vue-tsc": "^3.1.4"
   }

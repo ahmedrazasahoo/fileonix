@@ -2,7 +2,7 @@
   <div class="blog-post">
     <div class="container">
       <button class="back-button" @click="$router.push('/blog')">← Back to Blog</button>
-      
+
       <div class="content-layout">
         <article class="post">
           <div class="post-header">
@@ -20,77 +20,19 @@
           </div>
 
           <div class="post-content">
-            <p>{{ post.excerpt }}</p>
-
-            <h2>Introduction</h2>
-            <p>In today's digital landscape, the ability to convert and optimize media files is essential. Whether you're a content creator, web developer, or digital marketer, having the right image and video conversion tools can save you hours of work and significantly improve your workflow. This comprehensive guide covers the best tools available in 2026, ranging from free online converters to professional-grade software solutions.</p>
-
-            <h2>Why Media Conversion Matters</h2>
-            <p>Different platforms and devices require different file formats and specifications. Converting your media files ensures compatibility, reduces file sizes for faster loading times, and maintains quality across various platforms. From converting images for web optimization to transcoding videos for social media, the right tools make all the difference.</p>
-
-            <h2>Top Image Conversion Tools</h2>
-            <h3>Online Converters</h3>
-            <ul>
-              <li><strong>CloudConvert</strong> - Supports over 200 formats with batch processing capabilities</li>
-              <li><strong>Convertio</strong> - Browser-based converter with no installation required</li>
-              <li><strong>TinyPNG</strong> - Specialized in PNG and JPEG compression with excellent quality retention</li>
-              <li><strong>Squoosh</strong> - Google's advanced image compression tool with real-time preview</li>
-            </ul>
-
-            <h3>Desktop Software</h3>
-            <ul>
-              <li><strong>Adobe Photoshop</strong> - Industry standard with extensive format support and advanced editing</li>
-              <li><strong>GIMP</strong> - Free, open-source alternative with powerful conversion features</li>
-              <li><strong>XnConvert</strong> - Batch processing tool supporting over 500 formats</li>
-            </ul>
-
-            <h2>Best Video Conversion Tools</h2>
-            <h3>Professional Solutions</h3>
-            <ul>
-              <li><strong>HandBrake</strong> - Free, open-source video transcoder with preset optimizations</li>
-              <li><strong>FFmpeg</strong> - Command-line tool for advanced users with unlimited flexibility</li>
-              <li><strong>Adobe Media Encoder</strong> - Professional-grade encoder integrated with Creative Cloud</li>
-              <li><strong>DaVinci Resolve</strong> - Free version includes powerful encoding capabilities</li>
-            </ul>
-
-            <h3>Quick Online Tools</h3>
-            <ul>
-              <li><strong>Cloudinary</strong> - AI-powered media optimization and delivery platform</li>
-              <li><strong>Online Video Converter</strong> - Simple interface for common format conversions</li>
-              <li><strong>Zamzar</strong> - Supports video, audio, and image conversions in one platform</li>
-            </ul>
-
-            <h2>Key Features to Look For</h2>
-            <ul>
-              <li><strong>Batch Processing</strong> - Convert multiple files simultaneously to save time</li>
-              <li><strong>Quality Presets</strong> - Pre-configured settings for common use cases</li>
-              <li><strong>Format Support</strong> - Wide range of input and output formats</li>
-              <li><strong>Compression Options</strong> - Balance between file size and quality</li>
-              <li><strong>Speed</strong> - Hardware acceleration for faster processing</li>
-              <li><strong>Privacy</strong> - Local processing or secure cloud handling</li>
-            </ul>
-
-            <blockquote>
-              "The right conversion tool can reduce file sizes by up to 80% while maintaining visual quality, dramatically improving website performance and user experience."
-            </blockquote>
-
-            <h2>Best Practices for Media Conversion</h2>
-            <p>When converting images and videos, always keep the original files as backups. Choose the appropriate format based on your needs: WebP for modern web images, MP4 for universal video compatibility, or PNG for images requiring transparency. Consider using progressive JPEGs for better perceived loading performance on websites.</p>
-
-            <p>For video content, pay attention to codec selection, bitrate settings, and resolution. The H.264 codec remains the most compatible choice, while H.265 (HEVC) offers better compression for newer platforms. Always preview your converted files before publishing to ensure quality meets your standards.</p>
-
-            <h2>Emerging Trends in 2026</h2>
-            <p>AI-powered conversion tools are revolutionizing the industry with intelligent upscaling, automatic format selection, and content-aware compression. Cloud-based solutions now offer real-time conversion APIs that integrate seamlessly with content management systems and workflow automation tools. The rise of WebP, AVIF, and AV1 formats continues to push the boundaries of compression efficiency.</p>
-
-            <h2>Conclusion</h2>
-            <p>Whether you need a simple online converter for occasional use or a professional suite for daily media processing, there's a tool that fits your needs. Start with free options like HandBrake or Squoosh, and upgrade to professional solutions as your requirements grow. The investment in the right conversion tools will pay dividends in improved workflow efficiency and better quality output.</p>
+            <p v-if="post.excerpt" class="post-intro">{{ post.excerpt }}</p>
+            <div v-if="post.content" v-html="post.content"></div>
+            <div v-else-if="isLoading" class="content-skeleton">
+              <div class="skeleton-line"></div>
+              <div class="skeleton-line short"></div>
+              <div class="skeleton-line"></div>
+              <div class="skeleton-line short"></div>
+            </div>
           </div>
 
           <div class="post-footer">
             <div class="tags">
-              <span class="tag">Media Conversion</span>
-              <span class="tag">Image Optimization</span>
-              <span class="tag">Video Tools</span>
+              <span class="tag" v-if="post.category">{{ post.category }}</span>
             </div>
             <div class="share-buttons">
               <button class="share-btn">Share on Twitter</button>
@@ -113,6 +55,59 @@
             </div>
           </div>
 
+          <!-- Blogger Profile Card -->
+          <div class="sidebar-section blogger-profile" v-if="currentBlogger">
+            <h3 class="sidebar-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              About the Author
+            </h3>
+            <div class="blogger-info">
+              <div class="blogger-avatar-wrapper">
+                <img
+                  v-if="currentBlogger.avatar"
+                  :src="currentBlogger.avatar"
+                  :alt="currentBlogger.full_name"
+                  class="blogger-avatar"
+                >
+                <div v-else class="blogger-avatar-placeholder">
+                  {{ bloggerInitials }}
+                </div>
+              </div>
+              <div class="blogger-details">
+                <h4 class="blogger-name">{{ currentBlogger.full_name || currentBlogger.name }}</h4>
+                <p v-if="currentBlogger.short_name" class="blogger-short-name">{{ currentBlogger.short_name }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Categories -->
+          <div class="sidebar-section" v-if="allCategories.length">
+            <h3 class="sidebar-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+              Categories
+            </h3>
+            <div class="categories-list">
+              <button
+                v-for="cat in allCategories"
+                :key="cat.name"
+                class="category-chip"
+                :class="{ active: cat.title === post.category || cat.name === post.category }"
+                @click="goToCategory(cat)"
+              >
+                {{ cat.title || cat.name }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Related Posts -->
           <div class="sidebar-section">
             <h3 class="sidebar-title">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -120,13 +115,9 @@
               </svg>
               Latest in {{ post.category }}
             </h3>
-            <div class="related-posts">
-              <div
-                v-for="relatedPost in relatedPosts"
-                :key="relatedPost.id"
-                class="related-post-card"
-                @click="viewPost(relatedPost)"
-              >
+            <div class="related-posts" v-if="relatedPosts.length">
+              <div v-for="relatedPost in relatedPosts" :key="relatedPost.id" class="related-post-card"
+                @click="viewPost(relatedPost)">
                 <div class="related-post-image">
                   <img :src="relatedPost.image" :alt="relatedPost.title">
                 </div>
@@ -137,6 +128,7 @@
                 </div>
               </div>
             </div>
+            <p v-else class="no-related">No related posts found.</p>
           </div>
         </aside>
       </div>
@@ -164,7 +156,8 @@
             <input type="text" class="form-input" placeholder="Your name" v-model="newComment.author" required>
             <input type="email" class="form-input" placeholder="Your email" v-model="newComment.email" required>
           </div>
-          <textarea class="form-textarea" placeholder="Write your comment here..." v-model="newComment.text" required></textarea>
+          <textarea class="form-textarea" placeholder="Write your comment here..." v-model="newComment.text"
+            required></textarea>
           <button type="submit" class="submit-btn">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="22" y1="2" x2="11" y2="13"></line>
@@ -180,85 +173,137 @@
 </template>
 
 <script>
+import { createListResource } from 'frappe-ui'
+
 export default {
   name: 'BlogPost',
   data() {
     return {
-      post: {
-        id: 1,
-        title: 'The Ultimate Guide to Image & Video Conversion Tools (2026 Edition)',
-        excerpt: 'Explore the best image and video conversion tools available in 2026, from basic format converters to advanced editing solutions.',
-        author: 'Sarah Johnson',
-        date: 'Feb 3, 2026',
-        category: 'Tools',
-        image: 'https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=1200'
-      },
       showComments: false,
       showSuccessMessage: false,
-      newComment: {
-        author: '',
-        email: '',
-        text: ''
-      },
-      relatedPosts: [
-        {
-          id: 7,
-          title: 'Top 10 Developer Tools for 2026',
-          date: 'Feb 1, 2026',
-          category: 'Tools',
-          image: 'https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=800'
-        },
-        {
-          id: 8,
-          title: 'Best Code Editors and IDEs',
-          date: 'Jan 29, 2026',
-          category: 'Tools',
-          image: 'https://images.pexels.com/photos/574071/pexels-photo-574071.jpeg?auto=compress&cs=tinysrgb&w=800'
-        },
-        {
-          id: 9,
-          title: 'Essential Browser DevTools Tips',
-          date: 'Jan 27, 2026',
-          category: 'Tools',
-          image: 'https://images.pexels.com/photos/1181263/pexels-photo-1181263.jpeg?auto=compress&cs=tinysrgb&w=800'
-        },
-        {
-          id: 10,
-          title: 'Git Workflow Best Practices',
-          date: 'Jan 25, 2026',
-          category: 'Tools',
-          image: 'https://images.pexels.com/photos/1089438/pexels-photo-1089438.jpeg?auto=compress&cs=tinysrgb&w=800'
-        }
-      ]
+      newComment: { author: '', email: '', text: '' },
+      currentPostResource: null,
+      relatedPostsResource: null,
+      bloggersResource: null,
+      categoriesResource: null,
     }
   },
+  computed: {
+    rawPost() {
+      return this.currentPostResource?.data?.[0] || null
+    },
+    post() {
+      const p = this.rawPost
+      if (!p) return { title: '', category: '', author: '', date: '', image: '', excerpt: '', content: '' }
+      const blogger = (this.bloggersResource?.data || []).find(b => b.name === p.blogger)
+      return {
+        title: p.title || '',
+        category: p.blog_category || '',
+        author: blogger?.full_name || p.blogger || 'Admin',
+        date: p.published_on
+          ? new Date(p.published_on).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+          : '',
+        image: p.meta_image || 'https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=800',
+        excerpt: p.blog_intro || p.meta_description || '',
+        content: p.content || '',
+      }
+    },
+    currentBlogger() {
+      if (!this.rawPost?.blogger) return null
+      return (this.bloggersResource?.data || []).find(b => b.name === this.rawPost.blogger) || null
+    },
+    bloggerInitials() {
+      const name = this.currentBlogger?.full_name || this.currentBlogger?.name || ''
+      return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+    },
+    allCategories() {
+      return this.categoriesResource?.data || []
+    },
+    relatedPosts() {
+      const currentId = this.$route.params.id
+      return (this.relatedPostsResource?.data || [])
+        .filter(p => p.name !== currentId)
+        .slice(0, 4)
+        .map(p => ({
+          id: p.name,
+          title: p.title,
+          category: p.blog_category,
+          date: p.published_on
+            ? new Date(p.published_on).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+            : '',
+          image: p.meta_image || 'https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=800',
+        }))
+    },
+    isLoading() {
+      return !this.currentPostResource || this.currentPostResource.loading
+    },
+  },
+  created() {
+    this.fetchPost()
+    this.fetchBloggers()
+    this.fetchCategories()
+  },
+  watch: {
+    '$route.params.id'(newId) {
+      if (newId) this.fetchPost()
+    },
+    rawPost(p) {
+      if (p?.blog_category) this.fetchRelatedPosts(p.blog_category)
+    },
+  },
   methods: {
+    fetchPost() {
+      const postName = this.$route.params.id
+      this.currentPostResource = createListResource({
+        doctype: 'Blog Post',
+        fields: ['name', 'title', 'blog_category', 'blogger', 'meta_description', 'published_on', 'blog_intro', 'content', 'meta_image'],
+        filters: { name: postName },
+        pageLength: 1,
+        auto: true,
+      })
+    },
+    fetchRelatedPosts(category) {
+      this.relatedPostsResource = createListResource({
+        doctype: 'Blog Post',
+        fields: ['name', 'title', 'blog_category', 'published_on', 'meta_image'],
+        filters: { blog_category: category },
+        orderBy: 'published_on desc',
+        pageLength: 5,
+        auto: true,
+      })
+    },
+    fetchBloggers() {
+      this.bloggersResource = createListResource({
+        doctype: 'Blogger',
+        fields: ['name', 'full_name', 'avatar', 'short_name'],
+        pageLength: 50,
+        auto: true,
+      })
+    },
+    fetchCategories() {
+      this.categoriesResource = createListResource({
+        doctype: 'Blog Category',
+        fields: ['name', 'title', 'preview_image'],
+        pageLength: 50,
+        auto: true,
+      })
+    },
+    goToCategory(cat) {
+      this.$router.push({ name: 'Blog', query: { category: cat.title || cat.name } })
+    },
+    viewPost(relatedPost) {
+      this.$router.push({ name: 'BlogPost', params: { id: relatedPost.id } })
+    },
     toggleCommentSection() {
       this.showComments = !this.showComments
     },
     addComment() {
-      // Show success message in sidebar
-      this.showSuccessMessage = true
-
-      // Clear form
-      this.newComment.author = ''
-      this.newComment.email = ''
-      this.newComment.text = ''
-
-      // Hide comment section and scroll to top
       this.showComments = false
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-
-      // Auto-hide success message after 5 seconds
-      setTimeout(() => {
-        this.showSuccessMessage = false
-      }, 5000)
+      this.showSuccessMessage = true
+      this.newComment = { author: '', email: '', text: '' }
+      setTimeout(() => { this.showSuccessMessage = false }, 5000)
     },
-    viewPost(post) {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-      this.$router.push({ name: 'BlogPost', params: { id: post.id } })
-    }
-  }
+  },
 }
 </script>
 
@@ -410,13 +455,12 @@ export default {
 
 .post-content blockquote {
   border-left: 4px solid var(--color-primary);
-  padding-left: var(--spacing-lg);
+  padding: var(--spacing-lg);
   margin: var(--spacing-xl) 0;
   font-style: italic;
   color: var(--text-secondary);
   font-size: 1.15rem;
   background: var(--bg-secondary);
-  padding: var(--spacing-lg);
   border-radius: var(--radius-md);
 }
 
@@ -619,6 +663,9 @@ export default {
 .sidebar {
   position: sticky;
   top: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
 }
 
 /* Success Message */
@@ -627,7 +674,6 @@ export default {
   color: white;
   border-radius: var(--radius-xl);
   padding: var(--spacing-lg);
-  margin-bottom: var(--spacing-lg);
   box-shadow: var(--shadow-glow);
   display: flex;
   gap: var(--spacing-md);
@@ -655,16 +701,11 @@ export default {
 }
 
 @keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
+/* Sidebar Sections */
 .sidebar-section {
   background: var(--bg-card);
   border-radius: var(--radius-xl);
@@ -690,10 +731,105 @@ export default {
   color: var(--color-primary);
 }
 
+/* Blogger Profile Card */
+.blogger-profile .blogger-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.blogger-avatar-wrapper {
+  flex-shrink: 0;
+}
+
+.blogger-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--color-primary);
+}
+
+.blogger-avatar-placeholder {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+}
+
+.blogger-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.blogger-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: 'Poppins', sans-serif;
+  margin: 0 0 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.blogger-short-name {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Categories */
+.categories-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.category-chip {
+  padding: var(--spacing-xs) var(--spacing-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  font-family: 'Poppins', sans-serif;
+}
+
+.category-chip:hover,
+.category-chip.active {
+  background: var(--gradient-primary);
+  color: white;
+  border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Related Posts */
 .related-posts {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
+}
+
+.no-related {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-align: center;
+  padding: var(--spacing-md) 0;
 }
 
 .related-post-card {
@@ -761,6 +897,31 @@ export default {
   font-size: 0.7rem;
   color: var(--text-muted);
   margin-top: auto;
+}
+
+/* Skeleton loader */
+.content-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg) 0;
+}
+
+.skeleton-line {
+  height: 16px;
+  background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--bg-tertiary) 50%, var(--bg-secondary) 75%);
+  background-size: 200% 100%;
+  border-radius: var(--radius-sm);
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-line.short {
+  width: 60%;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 /* Responsive */

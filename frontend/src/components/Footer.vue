@@ -62,6 +62,8 @@
             <li><router-link to="/privacy">Privacy Policy</router-link></li>
             <li><router-link to="/terms">Terms of Service</router-link></li>
             <li><router-link to="/disclaimer">Disclaimer</router-link></li>
+            <li><router-link to="/cookie-policy">Cookie Policy</router-link></li>
+            <li><router-link to="/dmca">DMCA</router-link></li>
           </ul>
         </div>
 
