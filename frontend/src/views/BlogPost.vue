@@ -55,7 +55,32 @@
             </div>
           </div>
 
-          <!-- Blogger Profile Card -->
+          <!-- Related Posts -->
+          <div class="sidebar-section">
+            <h3 class="sidebar-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+              </svg>
+              Latest in {{ post.category }}
+            </h3>
+            <div class="related-posts" v-if="relatedPosts.length">
+              <div v-for="relatedPost in relatedPosts" :key="relatedPost.id" class="related-post-card"
+                @click="viewPost(relatedPost)">
+                <div class="related-post-image">
+                  <img :src="relatedPost.image" :alt="relatedPost.title">
+                </div>
+                <div class="related-post-content">
+                  <span class="related-post-category">{{ relatedPost.category }}</span>
+                  <h4 class="related-post-title">{{ relatedPost.title }}</h4>
+                  <span class="related-post-date">{{ relatedPost.date }}</span>
+                </div>
+              </div>
+            </div>
+            <p v-else class="no-related">No related posts found.</p>
+          </div>
+
+
+             <!-- Blogger Profile Card -->
           <div class="sidebar-section blogger-profile" v-if="currentBlogger">
             <h3 class="sidebar-title">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -107,29 +132,6 @@
             </div>
           </div>
 
-          <!-- Related Posts -->
-          <div class="sidebar-section">
-            <h3 class="sidebar-title">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-              </svg>
-              Latest in {{ post.category }}
-            </h3>
-            <div class="related-posts" v-if="relatedPosts.length">
-              <div v-for="relatedPost in relatedPosts" :key="relatedPost.id" class="related-post-card"
-                @click="viewPost(relatedPost)">
-                <div class="related-post-image">
-                  <img :src="relatedPost.image" :alt="relatedPost.title">
-                </div>
-                <div class="related-post-content">
-                  <span class="related-post-category">{{ relatedPost.category }}</span>
-                  <h4 class="related-post-title">{{ relatedPost.title }}</h4>
-                  <span class="related-post-date">{{ relatedPost.date }}</span>
-                </div>
-              </div>
-            </div>
-            <p v-else class="no-related">No related posts found.</p>
-          </div>
         </aside>
       </div>
 
@@ -315,10 +317,8 @@ export default {
 }
 
 .container {
-  max-width: 1400px;
-  width: 95%;
-  margin: 0 auto;
-  padding: 0 1rem;
+  width: 100%;
+  padding: 0 2vw;
 }
 
 .content-layout {
@@ -942,7 +942,7 @@ export default {
   }
 
   .container {
-    padding: 0 var(--spacing-md);
+    padding: 0 3vw;
   }
 
   .post {

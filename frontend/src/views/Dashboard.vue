@@ -781,14 +781,31 @@ export default {
   .dashboard-header {
     flex-direction: column;
     align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+
+  .page-title {
+    font-size: 1.75rem;
+  }
+
+  .page-subtitle {
+    font-size: 0.95rem;
   }
 
   .stats-cards {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .charts-section {
+    gap: var(--spacing-md);
+  }
+
+  .chart-card {
+    padding: var(--spacing-lg);
   }
 
   .quick-stats-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
   }
 
   .popular-grid {
@@ -802,6 +819,103 @@ export default {
 
   .activity-meta {
     width: 100%;
+  }
+
+  .section-title {
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard {
+    padding: var(--spacing-md) 0;
+  }
+
+  .container {
+    padding: 0 var(--spacing-sm);
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .page-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .cta-convert-btn {
+    width: 100%;
+    justify-content: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.95rem;
+  }
+
+  .stats-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card {
+    padding: var(--spacing-md);
+  }
+
+  .stat-value {
+    font-size: 1.75rem;
+  }
+
+  .chart-card {
+    padding: var(--spacing-md);
+  }
+
+  .chart-title {
+    font-size: 1.1rem;
+  }
+
+  .quick-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-stat-card {
+    padding: var(--spacing-md);
+  }
+
+  .quick-stat-value {
+    font-size: 1.4rem;
+  }
+
+  .activity-section,
+  .popular-section {
+    padding: var(--spacing-md);
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .popular-card {
+    padding: var(--spacing-md);
+  }
+
+  .bar-chart .bar {
+    min-width: 24px;
+  }
+}
+
+@media (max-width: 360px) {
+  .page-title {
+    font-size: 1.3rem;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+
+  .quick-stat-value {
+    font-size: 1.25rem;
+  }
+
+  .container {
+    padding: 0 10px;
   }
 }
 </style>

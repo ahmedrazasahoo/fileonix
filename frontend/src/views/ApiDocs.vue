@@ -988,51 +988,243 @@ export default {
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+  .api-container {
+    padding: 0 1.5rem;
+  }
+
+  .api-header {
+    padding: 3rem 0 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .api-title {
+    font-size: 2.5rem;
+  }
+
+  .quick-links {
+    grid-template-columns: repeat(2, 1fr);
+    margin-bottom: 3rem;
+  }
+
+  .api-section {
+    padding: 2rem;
+  }
+}
+
 @media (max-width: 768px) {
+  .api-container {
+    padding: 0 1rem;
+  }
+
+  .api-header {
+    padding: 2rem 0 1rem;
+    margin-bottom: 2rem;
+  }
+
   .api-title {
     font-size: 2rem;
     flex-direction: column;
+    gap: 0.5rem;
   }
-  
+
   .api-subtitle {
     font-size: 1rem;
   }
-  
+
+  .quick-links {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .link-card {
+    padding: 1.25rem;
+  }
+
+  .link-card h3 {
+    font-size: 1.1rem;
+  }
+
   .api-section {
     padding: 1.5rem;
   }
-  
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .endpoint-card {
+    padding: 1.25rem;
+  }
+
+  .endpoint-title {
+    font-size: 1.25rem;
+  }
+
   .param-row,
   .error-row {
     grid-template-columns: 1fr;
     gap: 0.5rem;
   }
-  
+
   .param-row.header,
   .error-row.header {
     display: none;
   }
-  
+
   .param-row > span,
   .error-row > span {
     display: flex;
     justify-content: space-between;
   }
-  
+
   .param-row > span::before,
   .error-row > span::before {
     content: attr(class);
     font-weight: 700;
     text-transform: capitalize;
   }
-  
+
   .code-block {
     padding: 1rem;
   }
-  
+
   .code-block code,
   .code-block pre {
     font-size: 0.8rem;
+  }
+
+  .rate-limits-grid,
+  .support-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rate-limit-card,
+  .support-card {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .api-container {
+    padding: 0 0.75rem;
+  }
+
+  .api-header {
+    padding: 1.5rem 0 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .api-title {
+    font-size: 1.6rem;
+  }
+
+  .api-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .quick-links {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .link-card {
+    padding: 1rem;
+  }
+
+  .link-icon svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .link-card h3 {
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .link-card p {
+    font-size: 0.8rem;
+  }
+
+  .api-section {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .section-description {
+    font-size: 0.95rem;
+  }
+
+  .endpoint-card {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .endpoint-title {
+    font-size: 1.1rem;
+  }
+
+  .endpoint-description {
+    font-size: 0.9rem;
+  }
+
+  .subsection-title {
+    font-size: 1.1rem;
+  }
+
+  .http-method {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .endpoint-path {
+    font-size: 0.9rem;
+  }
+
+  .example-title {
+    font-size: 1.1rem;
+    flex-wrap: wrap;
+  }
+
+  .plan-name {
+    font-size: 1.25rem;
+  }
+
+  .limit-value {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .api-title {
+    font-size: 1.4rem;
+  }
+
+  .quick-links {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .link-card h3 {
+    font-size: 0.85rem;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+  }
+
+  .api-section {
+    padding: 0.75rem;
+  }
+
+  .endpoint-card {
+    padding: 0.75rem;
   }
 }
 </style>
