@@ -697,7 +697,7 @@ onBeforeUnmount(() => {
 
 .posts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
   gap: var(--spacing-xl);
   margin-bottom: var(--spacing-2xl);
 }
