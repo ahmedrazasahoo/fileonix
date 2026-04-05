@@ -584,8 +584,9 @@ export default {
   border-radius: var(--radius-lg);
   background: var(--bg-secondary);
   transition: all var(--transition-base);
-  align-items: center;
+  align-items: flex-start;
   border: 1px solid transparent;
+  min-width: 0;
 }
 
 .activity-item:hover {
@@ -813,12 +814,26 @@ export default {
   }
 
   .activity-item {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .activity-icon {
+    flex-shrink: 0;
+  }
+
+  .activity-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .activity-badge {
+    flex-shrink: 0;
+    align-self: flex-start;
   }
 
   .activity-meta {
     width: 100%;
+    flex-wrap: wrap;
   }
 
   .section-title {

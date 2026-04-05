@@ -491,7 +491,8 @@ onBeforeUnmount(() => {
   margin-bottom: var(--spacing-lg);
 }
 
-.post-meta {
+/* post-meta inside the hero slider (dark overlay context) */
+.featured-content .post-meta {
   display: flex;
   gap: var(--spacing-lg);
   font-size: 0.9rem;
@@ -500,9 +501,27 @@ onBeforeUnmount(() => {
   border-top: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.post-author {
+.featured-content .post-author {
   font-weight: 600;
   color: rgba(255, 255, 255, 0.95);
+}
+
+/* post-meta inside regular cards (light background context) */
+.post-card .post-meta {
+  display: flex;
+  gap: var(--spacing-md);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--border-color);
+  margin-top: auto;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.post-card .post-author {
+  font-weight: 600;
+  color: var(--text-secondary);
 }
 
 .slider-dots {
@@ -710,6 +729,8 @@ onBeforeUnmount(() => {
   border: 1px solid var(--border-color);
   cursor: pointer;
   transition: all var(--transition-base);
+  display: flex;
+  flex-direction: column;
 }
 
 .post-card:hover {
@@ -736,6 +757,9 @@ onBeforeUnmount(() => {
 
 .post-content {
   padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .post-title {
@@ -752,6 +776,7 @@ onBeforeUnmount(() => {
   line-height: 1.6;
   margin-bottom: var(--spacing-md);
   font-size: 0.95rem;
+  flex: 1;
 }
 
 .no-results {
