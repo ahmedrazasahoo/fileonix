@@ -1,37 +1,37 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --color-primary: #BF5AF2;
-  --color-primary-dark: #9B3DD4;
-  --color-accent: #FF375F;
-  --color-warm: #FF9F0A;
+  --color-primary: #FF4D8D;
+  --color-primary-dark: #CC2E6A;
+  --color-accent: #FFB347;
+  --color-warm: #FF8C69;
 
-  --color-success: #30D158;
-  --color-success-dark: #25A244;
-  --color-info: #64D2FF;
-  --color-warning: #FF9F0A;
-  --color-danger: #FF375F;
+  --color-success: #06D6A0;
+  --color-success-dark: #04A87E;
+  --color-info: #118AB2;
+  --color-warning: #FFB347;
+  --color-danger: #EF233C;
 
-  --bg-primary: #0D0A14;
-  --bg-secondary: #140F1E;
-  --bg-tertiary: #1C1528;
-  --bg-card: #231C32;
-  --bg-hover: #2D2440;
+  --bg-primary: #09060C;
+  --bg-secondary: #110D16;
+  --bg-tertiary: #1A1520;
+  --bg-card: #221D2A;
+  --bg-hover: #2C2535;
 
-  --text-primary: #F5F0FF;
-  --text-secondary: #9D8FBB;
-  --text-muted: #5A4F70;
+  --text-primary: #FFF0F6;
+  --text-secondary: #B08098;
+  --text-muted: #5A3A4A;
 
-  --border-color: #332848;
-  --border-light: #221C35;
+  --border-color: #3A1F2E;
+  --border-light: #2A1520;
 
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
-  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.6);
-  --shadow-glow: 0 8px 24px rgba(191, 90, 242, 0.35);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.7);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.8);
+  --shadow-glow: 0 8px 24px rgba(255, 77, 141, 0.4);
 
-  --gradient-primary: linear-gradient(135deg, #BF5AF2, #9B3DD4);
+  --gradient-primary: linear-gradient(135deg, #FF4D8D, #CC2E6A);
 
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
@@ -50,7 +50,6 @@
   --transition-base: 250ms ease;
   --transition-smooth: 350ms cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 * {
   margin: 0;
   padding: 0;
